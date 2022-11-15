@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final _tabBarViewHeight = 400.0;
+  final _tabBarViewHeight = 315.0;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             const EdgeInsets.symmetric(horizontal: AppFinals.horizontalPadding),
         child: Card(
           margin: EdgeInsets.zero,
-          elevation: 5,
+          elevation: AppFinals.elevation,
           shape: RoundedRectangleBorder(
             side: const BorderSide(
               color: Color.fromARGB(255, 255, 152, 49),
@@ -179,7 +179,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: HomePageTabBarSliverPersistentHeaderDelegate(
-                    tabs: HomeData.getTabTupe(_tabBarViewHeight).map((t) => t.tab).toList(),
+                    tabs: HomeData.getTabTupe(_tabBarViewHeight)
+                        .map((t) => t.tab)
+                        .toList(),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -188,7 +190,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: TabBarView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        ...HomeData.getTabTupe(_tabBarViewHeight).map((t) => t.page),
+                        ...HomeData.getTabTupe(_tabBarViewHeight)
+                            .map((t) => t.page),
                       ],
                     ),
                   ),
@@ -201,17 +204,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   // ignore: non_constant_identifier_names
   Widget _3_buildLatestSearches(BuildContext context) => SizedBox(
-        height: 200,
+        height: 210,
         width: double.infinity,
         child: ScrollConfiguration(
           behavior: ScrollingBehavior(),
           child: GridView.builder(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppFinals.horizontalPadding,
+            padding: const EdgeInsets.only(
+              left: AppFinals.horizontalPadding,
+              right: AppFinals.horizontalPadding,
+              bottom: 5,
             ),
             physics: PagingScrollPhysics(
               parent: const BouncingScrollPhysics(),
-              itemDimension: 20 + MediaQuery.of(context).size.width * 0.8,
+              itemDimension: 30 + MediaQuery.of(context).size.width * 0.8,
             ),
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,

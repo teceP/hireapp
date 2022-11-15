@@ -7,11 +7,28 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Hire',
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+    HireApp(
+      appRouter: _appRouter,
     ),
   );
+}
+
+class HireApp extends StatelessWidget {
+  final AppRouter appRouter;
+  const HireApp({required this.appRouter, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'Hire',
+      routerDelegate: appRouter.delegate(),
+      routeInformationParser: appRouter.defaultRouteParser(),
+      theme: ThemeData(
+        textTheme: GoogleFonts.robotoTextTheme(
+          Theme.of(context).textTheme.apply(),
+        ),
+      ),
+    );
+  }
 }

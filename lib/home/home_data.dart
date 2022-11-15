@@ -1,3 +1,4 @@
+import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/home/tabbar/home_page_tab.dart';
 import 'package:autoroutetest/home/tabbar/beauty_search_page.dart';
@@ -24,14 +25,22 @@ class LatestSearchObject {
       required this.capacity});
 
   Widget buildWidget() => Card(
-        elevation: 3,
-        child: InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ListTile(
-              leading: SizedBox(
-                height: double.infinity,
+        elevation: AppFinals.elevation,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            AppFinals.borderRadius,
+          ),
+        ),
+        child: Stack(
+          children: [
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppFinals.horizontalPadding,
+              ),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  AppFinals.borderRadius - 5,
+                ),
                 child: Image.asset(
                   picUri,
                   fit: BoxFit.scaleDown,
@@ -52,7 +61,20 @@ class LatestSearchObject {
                 ],
               ),
             ),
-          ),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {},
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(
+                      AppFinals.borderRadius,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       );
 }
@@ -138,6 +160,7 @@ class HomeData {
             text: 'Animals',
           ),
           page: HomePageTab(
+            tabName: 'animals',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -147,6 +170,7 @@ class HomeData {
             text: 'Beauty',
           ),
           page: HomePageTab(
+            tabName: 'beauty',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -156,6 +180,7 @@ class HomeData {
             text: 'Face',
           ),
           page: HomePageTab(
+            tabName: 'face',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -165,6 +190,7 @@ class HomeData {
             text: 'Female',
           ),
           page: HomePageTab(
+            tabName: 'female',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -174,6 +200,7 @@ class HomeData {
             text: 'Male',
           ),
           page: HomePageTab(
+            tabName: 'male',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -183,6 +210,7 @@ class HomeData {
             text: 'Massages',
           ),
           page: HomePageTab(
+            tabName: 'massages',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -192,6 +220,7 @@ class HomeData {
             text: 'Pensioners',
           ),
           page: HomePageTab(
+            tabName: 'pensioners',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),
@@ -201,6 +230,7 @@ class HomeData {
             text: 'Tools',
           ),
           page: HomePageTab(
+            tabName: 'tools',
             items: TabBarData.animals,
             height: tabBarHeight,
           ),

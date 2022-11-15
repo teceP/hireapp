@@ -6,45 +6,49 @@ import 'package:flutter/material.dart';
 class HomePageTab extends StatelessWidget {
   final List<TabBarViewItem> items;
   final double height;
+  final String tabName; 
 
-  const HomePageTab({required this.items, required this.height, super.key});
+  const HomePageTab({required this.tabName, required this.items, required this.height, super.key});
 
   @override
   Widget build(BuildContext context) {
     var itemWidth = MediaQuery.of(context).size.width * 0.8;
 
     return ListView.builder(
+      key: PageStorageKey(tabName),
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       physics: PagingScrollPhysics(
         parent: const BouncingScrollPhysics(),
         itemDimension: itemWidth,
       ),
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppFinals.horizontalPadding),
+      padding: const EdgeInsets.only(
+        left: AppFinals.horizontalPadding,
+        right: AppFinals.horizontalPadding,
+        bottom: AppFinals.verticalPaddingAdditional,
+      ),
       itemCount: TabBarData.animals.length + 1,
       itemExtent: itemWidth,
       itemBuilder: (context, index) {
         if (index < TabBarData.animals.length) {
-          return InkWell(
-            onTap: () {},
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
+          return Card(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                AppFinals.borderRadius,
               ),
-              elevation: 5,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: ClipRRect(
+            ),
+            elevation: AppFinals.elevation,
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(AppFinals.borderRadius),
+                        topRight: Radius.circular(AppFinals.borderRadius),
                       ),
                       child: Image.asset(
                         TabBarData.animals[index].picUri,
@@ -53,12 +57,12 @@ class HomePageTab extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Padding(
-                      padding: const EdgeInsets.all(
-                        10,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: AppFinals.horizontalPadding,
+                        right: AppFinals.horizontalPadding,
+                        top:  AppFinals.verticalPadding,
+                        //bottom: AppFinals.verticalPaddingAdditional,
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -67,7 +71,7 @@ class HomePageTab extends StatelessWidget {
                           Text(
                             items[index].title,
                             style: const TextStyle(
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
@@ -113,9 +117,22 @@ class HomePageTab extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ],
+                ),
+                Positioned.fill(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(
+                          AppFinals.borderRadius,
+                        ),
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         } else {
@@ -125,10 +142,10 @@ class HomePageTab extends StatelessWidget {
               color: Colors.blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
-                  10,
+                  AppFinals.borderRadius,
                 ),
               ),
-              elevation: 3,
+              elevation: AppFinals.elevation,
               child: InkWell(
                 onTap: () {},
                 child: Align(
