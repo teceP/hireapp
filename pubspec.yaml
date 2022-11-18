@@ -34,6 +34,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_provider_ios: ^2.0.11
   auto_route: ^5.0.2
   salomon_bottom_bar: ^3.3.1
   font_awesome_flutter: ^10.2.1

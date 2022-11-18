@@ -362,7 +362,7 @@ packages:
     source: hosted
     version: "2.0.21"
   path_provider_ios:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider_ios
       url: "https://pub.dartlang.org"
