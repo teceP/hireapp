@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/commons/paging_scroll_physics.dart';
 import 'package:autoroutetest/commons/scrolling_behavior.dart';
 import 'package:autoroutetest/home/home_data.dart';
-import 'package:autoroutetest/search/home_search.dart';
+import 'package:autoroutetest/routes/router.gr.dart';
+import 'package:autoroutetest/search/search_popup.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   minLeadingWidth: 10,
                   leading: GestureDetector(
                     onTap: (() {
-                      showSearch(context: context, delegate: HomeSearch());
+                      showSearch(context: context, delegate: SearchPopup());
                     }),
                     child: HomeData.searchObjects[0].leading,
                   ),
@@ -98,7 +100,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     tag: 'searchBar',
                     child: GestureDetector(
                       onTap: (() {
-                        showSearch(context: context, delegate: HomeSearch());
+                        showSearch(context: context, delegate: SearchPopup());
                       }),
                       child: HomeData.searchObjects[0].title,
                     ),
@@ -138,13 +140,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Map<String, String> params = {
+                    'test    1': 'test10',
+                    'test2': 'test20'
+                  };
+
+                  var encoded = '';
+
+                  if (params.isNotEmpty) {
+                    encoded = 'query?';
+
+                    for (var p in params.entries) {
+                      if (!encoded.endsWith('?')) {
+                        encoded = '$encoded&';
+                      }
+
+                      encoded =
+                          '$encoded${Uri.encodeQueryComponent(p.key)}=${Uri.encodeQueryComponent(p.value)}';
+                    }
+                  }
+
+                  print('prepared query: ' + encoded);
+
+                  context.router.push(SearchRouter(query: encoded));
+                },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10))),
-
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
                   backgroundColor: Colors.blue[800],
                   minimumSize: Size.zero, // Set this
                   padding: const EdgeInsets.symmetric(
@@ -216,7 +243,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             physics: PagingScrollPhysics(
               parent: const BouncingScrollPhysics(),
-              itemDimension: 30 + MediaQuery.of(context).size.width * 0.8,
+              itemDimension: MediaQuery.of(context).size.width * 0.8,
             ),
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,

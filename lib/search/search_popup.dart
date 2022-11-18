@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-class HomeSearch extends SearchDelegate {
+class SearchPopup extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [

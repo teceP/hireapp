@@ -1,14 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/commons/paging_scroll_physics.dart';
 import 'package:autoroutetest/home/tabbar/tab_bar_data.dart';
+import 'package:autoroutetest/routes/router.gr.dart';
 import 'package:flutter/material.dart';
 
 class HomePageTab extends StatelessWidget {
   final List<TabBarViewItem> items;
   final double height;
-  final String tabName; 
+  final String tabName;
 
-  const HomePageTab({required this.tabName, required this.items, required this.height, super.key});
+  const HomePageTab(
+      {required this.tabName,
+      required this.items,
+      required this.height,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +67,7 @@ class HomePageTab extends StatelessWidget {
                       padding: const EdgeInsets.only(
                         left: AppFinals.horizontalPadding,
                         right: AppFinals.horizontalPadding,
-                        top:  AppFinals.verticalPadding,
+                        top: AppFinals.verticalPadding,
                         //bottom: AppFinals.verticalPaddingAdditional,
                       ),
                       child: Column(
@@ -123,7 +129,13 @@ class HomePageTab extends StatelessWidget {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        context.router.navigate(
+                          ShopRouter(
+                            shopId: 'shopId-$index',
+                          ),
+                        );
+                      },
                       borderRadius: const BorderRadius.all(
                         Radius.circular(
                           AppFinals.borderRadius,
@@ -148,6 +160,11 @@ class HomePageTab extends StatelessWidget {
               elevation: AppFinals.elevation,
               child: InkWell(
                 onTap: () {},
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(
+                    AppFinals.borderRadius,
+                  ),
+                ),
                 child: Align(
                   alignment: Alignment.center,
                   child: Column(

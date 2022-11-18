@@ -6,21 +6,13 @@ import 'package:autoroutetest/chats/chats_page.dart';
 import 'package:autoroutetest/chats/single_chat_page.dart';
 import 'package:autoroutetest/home/bottombar/bottom_nav_page.dart';
 import 'package:autoroutetest/home/tabbar/home_page_tab.dart';
-import 'package:autoroutetest/home/tabbar/beauty_search_page.dart';
 import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/favorites/favorites_page.dart';
-import 'package:autoroutetest/home/tabbar/face_search_page.dart';
-import 'package:autoroutetest/home/tabbar/male_search_page.dart';
-import 'package:autoroutetest/home/tabbar/female_search_page.dart';
-import 'package:autoroutetest/home/tabbar/massages_search_page.dart';
-import 'package:autoroutetest/home/tabbar/pensioners_search_page.dart';
-import 'package:autoroutetest/home/tabbar/tools_search_page.dart';
 import 'package:autoroutetest/profiles/profiles_page.dart';
 import 'package:autoroutetest/profiles/single_profile_page.dart';
 import 'package:autoroutetest/search/search_page.dart';
 import 'package:autoroutetest/unknown/unknown_page.dart';
-import 'package:autoroutetest/shops/single_shop_page.dart';
-import 'package:autoroutetest/shops/shops_page.dart';
+import 'package:autoroutetest/shops/shop_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
@@ -41,22 +33,12 @@ import 'package:autoroutetest/shops/shops_page.dart';
       ],
     ),
     AutoRoute(
-      path: '/shops',
-      name: 'ShopsRouter',
-      page: EmptyRouterPage,
-      children: [
-        AutoRoute(
-          path: '',
-          page: ShopsPage,
-        ),
-        AutoRoute(
-          path: ':shopId',
-          page: SingleShopPage,
-        ),
-      ],
+      path: '/shops/:shopId',
+      name: 'ShopRouter',
+      page: ShopPage,
     ),
     AutoRoute(
-      path: '/search',
+      path: '/search/:query',
       name: 'SearchRouter',
       page: SearchPage,
       /*children: [

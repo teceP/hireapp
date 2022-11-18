@@ -22,7 +22,7 @@ class BottomBarData {
             size: 25,
           ),
         ),
-        router: const HomeRouter()),
+        router: HomeRouter()),
     BottomNavBarTuple(
         bottomBarItem: SalomonBottomBarItem(
           title: const Text('Favoriten'),

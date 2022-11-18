@@ -1,14 +1,7 @@
 import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/home/tabbar/home_page_tab.dart';
-import 'package:autoroutetest/home/tabbar/beauty_search_page.dart';
-import 'package:autoroutetest/home/tabbar/face_search_page.dart';
-import 'package:autoroutetest/home/tabbar/female_search_page.dart';
-import 'package:autoroutetest/home/tabbar/male_search_page.dart';
-import 'package:autoroutetest/home/tabbar/massages_search_page.dart';
-import 'package:autoroutetest/home/tabbar/pensioners_search_page.dart';
 import 'package:autoroutetest/home/tabbar/tab_bar_data.dart';
-import 'package:autoroutetest/home/tabbar/tools_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

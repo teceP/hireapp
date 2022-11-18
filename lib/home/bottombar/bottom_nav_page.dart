@@ -19,7 +19,7 @@ class BottomNavPage extends StatelessWidget {
           leading: const AutoLeadingButton(),
           actions: [
             IconButton(
-              onPressed: () => context.router.navigate(const ChatsRouter(
+              onPressed: () => context.router.navigate(ChatsRouter(
                 children: [
                   ChatsRoute(),
                 ],
