@@ -141,29 +141,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Map<String, String> params = {
-                    'test    1': 'test10',
-                    'test2': 'test20'
-                  };
-
-                  var encoded = '';
-
-                  if (params.isNotEmpty) {
-                    encoded = 'query?';
-
-                    for (var p in params.entries) {
-                      if (!encoded.endsWith('?')) {
-                        encoded = '$encoded&';
-                      }
-
-                      encoded =
-                          '$encoded${Uri.encodeQueryComponent(p.key)}=${Uri.encodeQueryComponent(p.value)}';
-                    }
-                  }
-
-                  print('prepared query: ' + encoded);
-
-                  context.router.push(SearchRouter(query: encoded));
+                  context.router.push(
+                    SearchRouter(
+                      query: 'friseur',
+                      postalCode: 12345,
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -182,6 +165,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: Center(
                     child: Text(
                       'Suchen',
+                      style: TextStyle(
+                        //fontWeight: FontWeight.bold,
+                        fontSize: AppFinals.textSizeButton,
+                      ),
                     ),
                   ),
                 ),

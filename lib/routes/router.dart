@@ -10,6 +10,7 @@ import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/favorites/favorites_page.dart';
 import 'package:autoroutetest/profiles/profiles_page.dart';
 import 'package:autoroutetest/profiles/single_profile_page.dart';
+import 'package:autoroutetest/search/map_page.dart';
 import 'package:autoroutetest/search/search_page.dart';
 import 'package:autoroutetest/unknown/unknown_page.dart';
 import 'package:autoroutetest/shops/shop_page.dart';
@@ -38,15 +39,14 @@ import 'package:autoroutetest/shops/shop_page.dart';
       page: ShopPage,
     ),
     AutoRoute(
-      path: '/search/:query',
+      path: '/search',
       name: 'SearchRouter',
       page: SearchPage,
-      /*children: [
+    ),
         AutoRoute(
-          path: '',
-          page: SearchPage,
-        )
-      ]*/
+      path: '/map',
+      name: 'MapRouter',
+      page: MapPage,
     ),
     AutoRoute(
       path: '/',
