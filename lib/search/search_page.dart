@@ -69,6 +69,32 @@ class _SearchPageState extends State<SearchPage> {
             IconButton(
               onPressed: () async {
                 //Overlay.of(context)!.insert(_popupDialog);
+
+                List<GeoPoint> geoPoints = [
+                  GeoPoint(
+                    latitude: 53.55574934435046,
+                    longitude: 9.975334883282251,
+                  ),
+                  GeoPoint(
+                    latitude: 53.55574934435046,
+                    longitude: 9.975334883282251,
+                  ),
+                  GeoPoint(
+                    latitude: 53.55574934435046,
+                    longitude: 9.975334883282251,
+                  ),
+                ];
+
+                final String str = geoPoints
+                    .map((e) => e.toMap().toString())
+                    .toList()
+                    .toString();
+
+                print('str: $str');
+
+                print(Uri.encodeQueryComponent(str));
+
+                //Pass Id's  of pins(/let geo object bloc provider compute those pins) -> mapPage requests GeoPoint Objects from bloc provider
                 context.router.push(
                   const MapRouter(),
                 );
@@ -80,15 +106,10 @@ class _SearchPageState extends State<SearchPage> {
           ],
         ),
         body: Center(
-          child: Column(
-            children: [
+          child: 
               Text(
-                'Searchquery: ',
-              ),
-              Text(
-                'contains ?: }',
-              ),
-            ],
+                'Searchquery: ${widget.query!}',
+              
           ),
         ),
       ),

@@ -44,7 +44,7 @@ import 'package:autoroutetest/shops/shop_page.dart';
       page: SearchPage,
     ),
         AutoRoute(
-      path: '/map',
+      path: '/map:geopoints',
       name: 'MapRouter',
       page: MapPage,
     ),

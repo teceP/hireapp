@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.autoroutetest">
    <application
-        android:label="Hire"
+        android:label="Hire App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

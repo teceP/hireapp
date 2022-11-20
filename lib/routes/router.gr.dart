@@ -206,7 +206,7 @@ class AppRouter extends _i15.RootStackRouter {
         ),
         _i15.RouteConfig(
           MapRouter.name,
-          path: '/map',
+          path: '/map:geopoints',
         ),
         _i15.RouteConfig(
           BottomNavRoute.name,
@@ -387,7 +387,7 @@ class MapRouter extends _i15.PageRouteInfo<void> {
   const MapRouter()
       : super(
           MapRouter.name,
-          path: '/map',
+          path: '/map:geopoints',
         );
 
   static const String name = 'MapRouter';
