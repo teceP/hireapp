@@ -14,19 +14,20 @@ class BottomNavBarTuple {
 class BottomBarData {
   static final items = [
     BottomNavBarTuple(
-        bottomBarItem: SalomonBottomBarItem(
-          title: const Text('Suchen'),
-          selectedColor: Colors.blue[200],
-          icon: const Icon(
-            FontAwesomeIcons.toolbox,
-            size: 25,
-          ),
+      bottomBarItem: SalomonBottomBarItem(
+        title: const Text('Home'),
+        selectedColor: Colors.blue[800]!,
+        icon: const Icon(
+          FontAwesomeIcons.house,
+          size: 25,
         ),
-        router: HomeRouter()),
+      ),
+      router: const HomeRouter(),
+    ),
     BottomNavBarTuple(
         bottomBarItem: SalomonBottomBarItem(
           title: const Text('Favoriten'),
-          selectedColor: Colors.blue[200],
+          selectedColor: Colors.red,
           icon: const Icon(
             FontAwesomeIcons.heart,
             size: 25,
@@ -36,7 +37,7 @@ class BottomBarData {
     BottomNavBarTuple(
         bottomBarItem: SalomonBottomBarItem(
           title: const Text('Buchungen'),
-          selectedColor: Colors.blue[200],
+          selectedColor: Colors.orange,
           icon: const Icon(
             FontAwesomeIcons.calendarDays,
             size: 25,
@@ -46,7 +47,7 @@ class BottomBarData {
     BottomNavBarTuple(
         bottomBarItem: SalomonBottomBarItem(
           title: const Text('Profil'),
-          selectedColor: Colors.blue[200],
+          selectedColor: Colors.green,
           icon: const Icon(
             FontAwesomeIcons.userAstronaut,
             size: 25,

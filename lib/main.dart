@@ -1,4 +1,5 @@
 import 'package:autoroutetest/_logic/cubit/geo_points_cubit.dart';
+import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/default_firebase_options.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,8 +41,33 @@ class HireApp extends StatelessWidget {
         routerDelegate: appRouter.delegate(),
         routeInformationParser: appRouter.defaultRouteParser(),
         theme: ThemeData(
+          appBarTheme: AppBarTheme.of(context).copyWith(
+            backgroundColor: AppFinals.appBarColor,
+          ),
           textTheme: GoogleFonts.robotoTextTheme(
             Theme.of(context).textTheme.apply(),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Colors.grey.shade300,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              backgroundColor: AppFinals.buttonColor,
+            ),
           ),
         ),
       ),

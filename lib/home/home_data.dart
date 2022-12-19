@@ -108,14 +108,17 @@ class HomeData {
         title: Text("Mi. 14 Dez. - So. 18 Dez."),
         trailing: null),
     SearchObject(
-      leading: Icon(Icons.person),
-      title: Text(
-        "1 Zimmer - 2 Erwachsene - Keine Kinder",
-        style: TextStyle(
-          fontSize: 16,
-        ),
+      leading: Icon(
+        FontAwesomeIcons.locationDot,
+        size: 21,
       ),
-      trailing: null,
+      title: Text(
+        "Lohmühlenstraße 40, 12435 - 20 km Umkreis",
+      ),
+      trailing: Icon(
+        FontAwesomeIcons.diamond,
+        size: 21,
+      ),
     ),
   ];
 

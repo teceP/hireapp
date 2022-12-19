@@ -39,14 +39,16 @@ dependencies:
   path_provider_ios: ^2.0.11
   auto_route: ^5.0.2
   salomon_bottom_bar: ^3.3.1
-  font_awesome_flutter: ^10.2.1
+  font_awesome_flutter: ^10.3.0
   google_fonts: ^3.0.1
   sizer: ^2.0.15
-  flutter_osm_plugin: ^0.40.3+2
+  flutter_osm_plugin: ^0.50.0-alpha.4
   permission_handler: ^10.2.0
   loading_animations: ^2.2.0
   geoflutterfire2: ^2.3.13
   rxdart: ^0.27.7
+  hydrated_bloc: ^9.0.0
+  flutter_secure_storage: ^7.0.1
 
   firebase_core: ^2.3.0
   firebase_storage: ^11.0.6

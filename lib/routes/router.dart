@@ -12,6 +12,7 @@ import 'package:autoroutetest/profiles/profiles_page.dart';
 import 'package:autoroutetest/profiles/single_profile_page.dart';
 import 'package:autoroutetest/search/map_page.dart';
 import 'package:autoroutetest/search/search_page.dart';
+import 'package:autoroutetest/settings/settings_page.dart';
 import 'package:autoroutetest/unknown/unknown_page.dart';
 import 'package:autoroutetest/shops/shop_page.dart';
 
@@ -43,10 +44,15 @@ import 'package:autoroutetest/shops/shop_page.dart';
       name: 'SearchRouter',
       page: SearchPage,
     ),
-        AutoRoute(
+    AutoRoute(
       path: '/map:geopoints',
       name: 'MapRouter',
       page: MapPage,
+    ),
+    AutoRoute(
+      path: '/settings/:userId',
+      name: 'SettingsRouter',
+      page: SettingsPage,
     ),
     AutoRoute(
       path: '/',

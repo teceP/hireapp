@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,30 +15,42 @@ part 'geo_points_state.dart';
 class GeoPointsCubit extends Cubit<GeoPointsState> {
   final geo = GeoFlutterFire();
   final _firestore = FirebaseFirestore.instance;
-  List<GeoFirePoint> geopoints = [];
-  final double maxDistance = 200000000;
+  final List<GeoFirePoint> _geopoints = [
+    GeoFirePoint(53.63722283559534, 9.916662224838287),
+    GeoFirePoint(53.63773206234641, 9.922669884282625),
+    GeoFirePoint(53.64210776237749, 9.915287199934266),
+    GeoFirePoint(53.630758530066714, 9.905335741989019),
+    GeoFirePoint(37.79702552606294, -122.40384207935548),
+    GeoFirePoint(37.800586111975896, -122.42066489448885),
+    GeoFirePoint(37.777286602471456, -122.41285430188543),
+    GeoFirePoint(37.785257420902916, -122.39577399474244),
+  ];
 
   GeoPointsCubit() : super(GeoPointsInitial());
 
-  void loadGeoPoints() {
-    geopoints = [
-      GeoFirePoint(
-        53.63722283559534,
-        9.916662224838287,
-      ),
-      GeoFirePoint(
-        53.63773206234641,
-        9.922669884282625,
-      ),
-      GeoFirePoint(
-        53.64210776237749,
-        9.915287199934266,
-      ),
-      GeoFirePoint(
-        53.630758530066714,
-        9.905335741989019,
-      ),
-    ];
+  Future<List<osm.GeoPoint>> staticGeoPointsNearby(
+      osm.Region region, double maxDistance) async {
+    List<osm.GeoPoint> nearby = [];
+
+    for (GeoFirePoint geoFirePoint in _geopoints) {
+      final osm.GeoPoint geoPoint = osm.GeoPoint(
+          latitude: geoFirePoint.latitude, longitude: geoFirePoint.longitude);
+
+      final distance = await osm.distance2point(geoPoint, region.center);
+      print('distance: $distance, maxDistance: $maxDistance');
+      if (distance < maxDistance) {
+        nearby.add(geoPoint);
+        print('added');
+      }
+    }
+
+    return nearby;
+  }
+
+  List<osm.GeoPoint> parseGeoFirePoints(List<GeoFirePoint> geoFirePoints) {
+    return geoFirePoints
+        .map((e) => osm.GeoPoint(latitude: e.latitude, longitude: e.longitude))
+        .toList();
   }
 
   /**
@@ -57,7 +70,7 @@ class GeoPointsCubit extends Cubit<GeoPointsState> {
         .switchMap(
       (center) => geo.collection(collectionRef: collectionReference).within(
             center: GeoFirePoint(center.latitude, center.longitude),
-            radius: maxDistance,
+            radius: 1234, //region.boundingbox.north+south
             field: field,
           ),
     )
@@ -75,37 +88,12 @@ class GeoPointsCubit extends Cubit<GeoPointsState> {
       ),
     );
 
-    _tempAddDummpy();
-
     return centerBehaviorSubject.switchMap(
       (center) => geo.collection(collectionRef: collectionReference).within(
             center: GeoFirePoint(center.latitude, center.longitude),
-            radius: maxDistance,
+            radius: 1234, //region.boundingbox.north+south
             field: field,
           ),
-    );
-  }
-
-  void _tempAddDummpy() {
-    geopoints.addAll(
-      [
-        GeoFirePoint(
-          53.63722283559534,
-          9.916662224838287,
-        ),
-        GeoFirePoint(
-          53.63773206234641,
-          9.922669884282625,
-        ),
-        GeoFirePoint(
-          53.64210776237749,
-          9.915287199934266,
-        ),
-        GeoFirePoint(
-          53.630758530066714,
-          9.905335741989019,
-        ),
-      ],
     );
   }
 
@@ -113,12 +101,11 @@ class GeoPointsCubit extends Cubit<GeoPointsState> {
       double latitude, double longitude) async {
     print('loadGeoPointsNearby');
 
-    if (geopoints.isEmpty) {
-      emit(GeoPointsLoading());
-      loadGeoPoints();
-    }
+    emit(GeoPointsLoading());
+
     final usersGeoPoint = GeoFirePoint(latitude, longitude);
-    final List<GeoFirePoint> nearbyGeoPoints = [];
+    final List<GeoFirePoint> nearbyGeoPoints =
+        List.from(_geopoints); //TODO load here from firestore
 
     final collectionReference = _firestore.collection('location');
     const String field = 'position';
@@ -126,7 +113,7 @@ class GeoPointsCubit extends Cubit<GeoPointsState> {
     final Stream<List<DocumentSnapshot>> stream =
         geo.collection(collectionRef: collectionReference).within(
               center: usersGeoPoint,
-              radius: maxDistance,
+              radius: 1234, //region.boundingbox.north+south
               field: field,
             );
     stream.listen((event) {
@@ -141,62 +128,15 @@ class GeoPointsCubit extends Cubit<GeoPointsState> {
   }
 
   void uploadPoints() {
-    if (geopoints.isEmpty) {
-      loadGeoPoints();
-    }
-
     if (kDebugMode) {
       print('uploadPoints');
-      print('geoPoints size: ${geopoints.length}');
+      print('geoPoints size: ${_geopoints.length}');
     }
 
-    for (var geopoint in geopoints) {
+    for (var geopoint in _geopoints) {
       _firestore.collection('locations').add(
         {'name': 'random name', 'position': geopoint.data},
       );
     }
   }
-
-  /*void loadGeoPoints() {
-    geopoints = [
-      osm.GeoPoint(
-        latitude: 53.63722283559534,
-        longitude: 9.916662224838287,
-      ),
-      osm.GeoPoint(
-        latitude: 53.63773206234641,
-        longitude: 9.922669884282625,
-      ),
-      osm.GeoPoint(
-        latitude: 53.64210776237749,
-        longitude: 9.915287199934266,
-      ),
-      osm.GeoPoint(
-        latitude: 53.630758530066714,
-        longitude: 9.905335741989019,
-      ),
-    ];
-  }
-
-  Future<List<osm.GeoPoint>> loadGeoPointsNearby(
-      double latitude, double longitude) async {
-    if (geopoints.isEmpty) {
-      emit(GeoPointsLoading());
-      loadGeoPoints();
-    }
-    final usersGeoPoint = osm.GeoPoint(latitude: latitude, longitude: longitude);
-    final List<osm.GeoPoint> nearbyGeoPoints = [];
-
-    for (final gp in geopoints) {
-      final distance = await osm.distance2point(gp, usersGeoPoint);
-      if (distance < maxDistance) {
-        nearbyGeoPoints.add(gp);
-      }
-    }
-
-    emit(nearbyGeoPoints.isEmpty
-        ? GeoPointsLoadedWithoutResults()
-        : GeoPointsLoadedWithResults());
-    return nearbyGeoPoints;
-  }*/
 }

@@ -11,33 +11,34 @@
 // ignore_for_file: type=lint
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i15;
+import 'package:auto_route/auto_route.dart' as _i16;
 import 'package:auto_route/empty_router_widgets.dart' as _i1;
-import 'package:flutter/cupertino.dart' as _i17;
-import 'package:flutter/material.dart' as _i16;
+import 'package:flutter/cupertino.dart' as _i18;
+import 'package:flutter/material.dart' as _i17;
 
-import '../booking/bookings_page.dart' as _i11;
-import '../booking/single_booking_page.dart' as _i12;
-import '../chats/chats_page.dart' as _i6;
-import '../chats/single_chat_page.dart' as _i7;
-import '../favorites/favorites_page.dart' as _i9;
-import '../home/bottombar/bottom_nav_page.dart' as _i5;
-import '../home/home_page.dart' as _i8;
-import '../profiles/profiles_page.dart' as _i13;
-import '../profiles/single_profile_page.dart' as _i14;
+import '../booking/bookings_page.dart' as _i12;
+import '../booking/single_booking_page.dart' as _i13;
+import '../chats/chats_page.dart' as _i7;
+import '../chats/single_chat_page.dart' as _i8;
+import '../favorites/favorites_page.dart' as _i10;
+import '../home/bottombar/bottom_nav_page.dart' as _i6;
+import '../home/home_page.dart' as _i9;
+import '../profiles/profiles_page.dart' as _i14;
+import '../profiles/single_profile_page.dart' as _i15;
 import '../search/map_page.dart' as _i4;
 import '../search/search_page.dart' as _i3;
+import '../settings/settings_page.dart' as _i5;
 import '../shops/shop_page.dart' as _i2;
-import '../unknown/unknown_page.dart' as _i10;
+import '../unknown/unknown_page.dart' as _i11;
 
-class AppRouter extends _i15.RootStackRouter {
-  AppRouter([_i16.GlobalKey<_i16.NavigatorState>? navigatorKey])
+class AppRouter extends _i16.RootStackRouter {
+  AppRouter([_i17.GlobalKey<_i17.NavigatorState>? navigatorKey])
       : super(navigatorKey);
 
   @override
-  final Map<String, _i15.PageFactory> pagesMap = {
+  final Map<String, _i16.PageFactory> pagesMap = {
     ChatsRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.EmptyRouterPage(),
       );
@@ -46,7 +47,7 @@ class AppRouter extends _i15.RootStackRouter {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<ShopRouterArgs>(
           orElse: () => ShopRouterArgs(shopId: pathParams.getString('shopId')));
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i2.ShopPage(
           shopId: args.shopId,
@@ -58,90 +59,101 @@ class AppRouter extends _i15.RootStackRouter {
       final queryParams = routeData.queryParams;
       final args = routeData.argsAs<SearchRouterArgs>(
           orElse: () => SearchRouterArgs(
-                query: queryParams.optString('query'),
-                postalCode: queryParams.optInt('postalCode'),
-                datestart: queryParams.optString('datestart'),
-                dateend: queryParams.optString('dateend'),
-                pricemax: queryParams.optString('pricemax'),
-                pricemin: queryParams.optString('pricemin'),
+                service: queryParams.optString('service'),
+                latitude: queryParams.optDouble('latitude'),
+                longitude: queryParams.optDouble('longitude'),
+                distance: queryParams.optInt('distance'),
+                dateAsInt: queryParams.optInt('dateAsInt'),
               ));
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i3.SearchPage(
-          query: args.query,
-          postalCode: args.postalCode,
-          datestart: args.datestart,
-          dateend: args.dateend,
-          pricemax: args.pricemax,
-          pricemin: args.pricemin,
+          service: args.service,
+          latitude: args.latitude,
+          longitude: args.longitude,
+          distance: args.distance,
+          dateAsInt: args.dateAsInt,
           key: args.key,
         ),
       );
     },
     MapRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i4.MapPage(),
       );
     },
-    BottomNavRoute.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+    SettingsRouter.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<SettingsRouterArgs>(
+          orElse: () =>
+              SettingsRouterArgs(userId: pathParams.getString('userId')));
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i5.BottomNavPage(),
+        child: _i5.SettingsPage(
+          userId: args.userId,
+          key: args.key,
+        ),
+      );
+    },
+    BottomNavRoute.name: (routeData) {
+      return _i16.MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const _i6.BottomNavPage(),
       );
     },
     ChatsRoute.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i6.ChatsPage(),
+        child: const _i7.ChatsPage(),
       );
     },
     SingleChatRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<SingleChatRouteArgs>(
           orElse: () => SingleChatRouteArgs(chatId: pathParams.get('chatId')));
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i7.SingleChatPage(
+        child: _i8.SingleChatPage(
           chatId: args.chatId,
           key: args.key,
         ),
       );
     },
     HomeRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i8.HomePage(),
+        child: const _i9.HomePage(),
       );
     },
     FavoritesRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i9.FavoritesPage(),
+        child: const _i10.FavoritesPage(),
       );
     },
     BookingsRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.EmptyRouterPage(),
       );
     },
     ProfilesRouter.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.EmptyRouterPage(),
       );
     },
     UnknownRoute.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i10.UnknownPage(),
+        child: const _i11.UnknownPage(),
       );
     },
     BookingsRoute.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i11.BookingsPage(),
+        child: const _i12.BookingsPage(),
       );
     },
     SingleBookingRoute.name: (routeData) {
@@ -149,18 +161,18 @@ class AppRouter extends _i15.RootStackRouter {
       final args = routeData.argsAs<SingleBookingRouteArgs>(
           orElse: () =>
               SingleBookingRouteArgs(bookingId: pathParams.get('bookingId')));
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i12.SingleBookingPage(
+        child: _i13.SingleBookingPage(
           bookingId: args.bookingId,
           key: args.key,
         ),
       );
     },
     ProfilesRoute.name: (routeData) {
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i13.ProfilesPage(),
+        child: const _i14.ProfilesPage(),
       );
     },
     SingleProfileRoute.name: (routeData) {
@@ -168,9 +180,9 @@ class AppRouter extends _i15.RootStackRouter {
       final args = routeData.argsAs<SingleProfileRouteArgs>(
           orElse: () =>
               SingleProfileRouteArgs(profileId: pathParams.get('profileId')));
-      return _i15.MaterialPageX<dynamic>(
+      return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i14.SingleProfilePage(
+        child: _i15.SingleProfilePage(
           profileId: args.profileId,
           key: args.key,
         ),
@@ -179,84 +191,88 @@ class AppRouter extends _i15.RootStackRouter {
   };
 
   @override
-  List<_i15.RouteConfig> get routes => [
-        _i15.RouteConfig(
+  List<_i16.RouteConfig> get routes => [
+        _i16.RouteConfig(
           ChatsRouter.name,
           path: '/chats',
           children: [
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               ChatsRoute.name,
               path: '',
               parent: ChatsRouter.name,
             ),
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               SingleChatRoute.name,
               path: ':chatId',
               parent: ChatsRouter.name,
             ),
           ],
         ),
-        _i15.RouteConfig(
+        _i16.RouteConfig(
           ShopRouter.name,
           path: '/shops/:shopId',
         ),
-        _i15.RouteConfig(
+        _i16.RouteConfig(
           SearchRouter.name,
           path: '/search',
         ),
-        _i15.RouteConfig(
+        _i16.RouteConfig(
           MapRouter.name,
           path: '/map:geopoints',
         ),
-        _i15.RouteConfig(
+        _i16.RouteConfig(
+          SettingsRouter.name,
+          path: '/settings/:userId',
+        ),
+        _i16.RouteConfig(
           BottomNavRoute.name,
           path: '/',
           children: [
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               HomeRouter.name,
               path: 'home',
               parent: BottomNavRoute.name,
             ),
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               FavoritesRouter.name,
               path: 'favorites',
               parent: BottomNavRoute.name,
             ),
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               BookingsRouter.name,
               path: 'bookings',
               parent: BottomNavRoute.name,
               children: [
-                _i15.RouteConfig(
+                _i16.RouteConfig(
                   BookingsRoute.name,
                   path: '',
                   parent: BookingsRouter.name,
                 ),
-                _i15.RouteConfig(
+                _i16.RouteConfig(
                   SingleBookingRoute.name,
                   path: ':bookingId',
                   parent: BookingsRouter.name,
                 ),
               ],
             ),
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               ProfilesRouter.name,
               path: 'profiles',
               parent: BottomNavRoute.name,
               children: [
-                _i15.RouteConfig(
+                _i16.RouteConfig(
                   ProfilesRoute.name,
                   path: '',
                   parent: ProfilesRouter.name,
                 ),
-                _i15.RouteConfig(
+                _i16.RouteConfig(
                   SingleProfileRoute.name,
                   path: ':profileId',
                   parent: ProfilesRouter.name,
                 ),
               ],
             ),
-            _i15.RouteConfig(
+            _i16.RouteConfig(
               UnknownRoute.name,
               path: '*',
               parent: BottomNavRoute.name,
@@ -268,8 +284,8 @@ class AppRouter extends _i15.RootStackRouter {
 
 /// generated route for
 /// [_i1.EmptyRouterPage]
-class ChatsRouter extends _i15.PageRouteInfo<void> {
-  const ChatsRouter({List<_i15.PageRouteInfo>? children})
+class ChatsRouter extends _i16.PageRouteInfo<void> {
+  const ChatsRouter({List<_i16.PageRouteInfo>? children})
       : super(
           ChatsRouter.name,
           path: '/chats',
@@ -281,10 +297,10 @@ class ChatsRouter extends _i15.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.ShopPage]
-class ShopRouter extends _i15.PageRouteInfo<ShopRouterArgs> {
+class ShopRouter extends _i16.PageRouteInfo<ShopRouterArgs> {
   ShopRouter({
     required String shopId,
-    _i17.Key? key,
+    _i18.Key? key,
   }) : super(
           ShopRouter.name,
           path: '/shops/:shopId',
@@ -306,7 +322,7 @@ class ShopRouterArgs {
 
   final String shopId;
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -316,34 +332,31 @@ class ShopRouterArgs {
 
 /// generated route for
 /// [_i3.SearchPage]
-class SearchRouter extends _i15.PageRouteInfo<SearchRouterArgs> {
+class SearchRouter extends _i16.PageRouteInfo<SearchRouterArgs> {
   SearchRouter({
-    String? query,
-    int? postalCode,
-    String? datestart,
-    String? dateend,
-    String? pricemax,
-    String? pricemin,
-    _i17.Key? key,
+    String? service,
+    double? latitude,
+    double? longitude,
+    int? distance,
+    int? dateAsInt,
+    _i18.Key? key,
   }) : super(
           SearchRouter.name,
           path: '/search',
           args: SearchRouterArgs(
-            query: query,
-            postalCode: postalCode,
-            datestart: datestart,
-            dateend: dateend,
-            pricemax: pricemax,
-            pricemin: pricemin,
+            service: service,
+            latitude: latitude,
+            longitude: longitude,
+            distance: distance,
+            dateAsInt: dateAsInt,
             key: key,
           ),
           rawQueryParams: {
-            'query': query,
-            'postalCode': postalCode,
-            'datestart': datestart,
-            'dateend': dateend,
-            'pricemax': pricemax,
-            'pricemin': pricemin,
+            'service': service,
+            'latitude': latitude,
+            'longitude': longitude,
+            'distance': distance,
+            'dateAsInt': dateAsInt,
           },
         );
 
@@ -352,38 +365,35 @@ class SearchRouter extends _i15.PageRouteInfo<SearchRouterArgs> {
 
 class SearchRouterArgs {
   const SearchRouterArgs({
-    this.query,
-    this.postalCode,
-    this.datestart,
-    this.dateend,
-    this.pricemax,
-    this.pricemin,
+    this.service,
+    this.latitude,
+    this.longitude,
+    this.distance,
+    this.dateAsInt,
     this.key,
   });
 
-  final String? query;
+  final String? service;
 
-  final int? postalCode;
+  final double? latitude;
 
-  final String? datestart;
+  final double? longitude;
 
-  final String? dateend;
+  final int? distance;
 
-  final String? pricemax;
+  final int? dateAsInt;
 
-  final String? pricemin;
-
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
-    return 'SearchRouterArgs{query: $query, postalCode: $postalCode, datestart: $datestart, dateend: $dateend, pricemax: $pricemax, pricemin: $pricemin, key: $key}';
+    return 'SearchRouterArgs{service: $service, latitude: $latitude, longitude: $longitude, distance: $distance, dateAsInt: $dateAsInt, key: $key}';
   }
 }
 
 /// generated route for
 /// [_i4.MapPage]
-class MapRouter extends _i15.PageRouteInfo<void> {
+class MapRouter extends _i16.PageRouteInfo<void> {
   const MapRouter()
       : super(
           MapRouter.name,
@@ -394,9 +404,44 @@ class MapRouter extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i5.BottomNavPage]
-class BottomNavRoute extends _i15.PageRouteInfo<void> {
-  const BottomNavRoute({List<_i15.PageRouteInfo>? children})
+/// [_i5.SettingsPage]
+class SettingsRouter extends _i16.PageRouteInfo<SettingsRouterArgs> {
+  SettingsRouter({
+    required String userId,
+    _i18.Key? key,
+  }) : super(
+          SettingsRouter.name,
+          path: '/settings/:userId',
+          args: SettingsRouterArgs(
+            userId: userId,
+            key: key,
+          ),
+          rawPathParams: {'userId': userId},
+        );
+
+  static const String name = 'SettingsRouter';
+}
+
+class SettingsRouterArgs {
+  const SettingsRouterArgs({
+    required this.userId,
+    this.key,
+  });
+
+  final String userId;
+
+  final _i18.Key? key;
+
+  @override
+  String toString() {
+    return 'SettingsRouterArgs{userId: $userId, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i6.BottomNavPage]
+class BottomNavRoute extends _i16.PageRouteInfo<void> {
+  const BottomNavRoute({List<_i16.PageRouteInfo>? children})
       : super(
           BottomNavRoute.name,
           path: '/',
@@ -407,8 +452,8 @@ class BottomNavRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.ChatsPage]
-class ChatsRoute extends _i15.PageRouteInfo<void> {
+/// [_i7.ChatsPage]
+class ChatsRoute extends _i16.PageRouteInfo<void> {
   const ChatsRoute()
       : super(
           ChatsRoute.name,
@@ -419,11 +464,11 @@ class ChatsRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i7.SingleChatPage]
-class SingleChatRoute extends _i15.PageRouteInfo<SingleChatRouteArgs> {
+/// [_i8.SingleChatPage]
+class SingleChatRoute extends _i16.PageRouteInfo<SingleChatRouteArgs> {
   SingleChatRoute({
     required dynamic chatId,
-    _i17.Key? key,
+    _i18.Key? key,
   }) : super(
           SingleChatRoute.name,
           path: ':chatId',
@@ -445,7 +490,7 @@ class SingleChatRouteArgs {
 
   final dynamic chatId;
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -454,8 +499,8 @@ class SingleChatRouteArgs {
 }
 
 /// generated route for
-/// [_i8.HomePage]
-class HomeRouter extends _i15.PageRouteInfo<void> {
+/// [_i9.HomePage]
+class HomeRouter extends _i16.PageRouteInfo<void> {
   const HomeRouter()
       : super(
           HomeRouter.name,
@@ -466,8 +511,8 @@ class HomeRouter extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i9.FavoritesPage]
-class FavoritesRouter extends _i15.PageRouteInfo<void> {
+/// [_i10.FavoritesPage]
+class FavoritesRouter extends _i16.PageRouteInfo<void> {
   const FavoritesRouter()
       : super(
           FavoritesRouter.name,
@@ -479,8 +524,8 @@ class FavoritesRouter extends _i15.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i1.EmptyRouterPage]
-class BookingsRouter extends _i15.PageRouteInfo<void> {
-  const BookingsRouter({List<_i15.PageRouteInfo>? children})
+class BookingsRouter extends _i16.PageRouteInfo<void> {
+  const BookingsRouter({List<_i16.PageRouteInfo>? children})
       : super(
           BookingsRouter.name,
           path: 'bookings',
@@ -492,8 +537,8 @@ class BookingsRouter extends _i15.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i1.EmptyRouterPage]
-class ProfilesRouter extends _i15.PageRouteInfo<void> {
-  const ProfilesRouter({List<_i15.PageRouteInfo>? children})
+class ProfilesRouter extends _i16.PageRouteInfo<void> {
+  const ProfilesRouter({List<_i16.PageRouteInfo>? children})
       : super(
           ProfilesRouter.name,
           path: 'profiles',
@@ -504,8 +549,8 @@ class ProfilesRouter extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.UnknownPage]
-class UnknownRoute extends _i15.PageRouteInfo<void> {
+/// [_i11.UnknownPage]
+class UnknownRoute extends _i16.PageRouteInfo<void> {
   const UnknownRoute()
       : super(
           UnknownRoute.name,
@@ -516,8 +561,8 @@ class UnknownRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i11.BookingsPage]
-class BookingsRoute extends _i15.PageRouteInfo<void> {
+/// [_i12.BookingsPage]
+class BookingsRoute extends _i16.PageRouteInfo<void> {
   const BookingsRoute()
       : super(
           BookingsRoute.name,
@@ -528,11 +573,11 @@ class BookingsRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i12.SingleBookingPage]
-class SingleBookingRoute extends _i15.PageRouteInfo<SingleBookingRouteArgs> {
+/// [_i13.SingleBookingPage]
+class SingleBookingRoute extends _i16.PageRouteInfo<SingleBookingRouteArgs> {
   SingleBookingRoute({
     required dynamic bookingId,
-    _i17.Key? key,
+    _i18.Key? key,
   }) : super(
           SingleBookingRoute.name,
           path: ':bookingId',
@@ -554,7 +599,7 @@ class SingleBookingRouteArgs {
 
   final dynamic bookingId;
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -563,8 +608,8 @@ class SingleBookingRouteArgs {
 }
 
 /// generated route for
-/// [_i13.ProfilesPage]
-class ProfilesRoute extends _i15.PageRouteInfo<void> {
+/// [_i14.ProfilesPage]
+class ProfilesRoute extends _i16.PageRouteInfo<void> {
   const ProfilesRoute()
       : super(
           ProfilesRoute.name,
@@ -575,11 +620,11 @@ class ProfilesRoute extends _i15.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i14.SingleProfilePage]
-class SingleProfileRoute extends _i15.PageRouteInfo<SingleProfileRouteArgs> {
+/// [_i15.SingleProfilePage]
+class SingleProfileRoute extends _i16.PageRouteInfo<SingleProfileRouteArgs> {
   SingleProfileRoute({
     required dynamic profileId,
-    _i17.Key? key,
+    _i18.Key? key,
   }) : super(
           SingleProfileRoute.name,
           path: ':profileId',
@@ -601,7 +646,7 @@ class SingleProfileRouteArgs {
 
   final dynamic profileId;
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {

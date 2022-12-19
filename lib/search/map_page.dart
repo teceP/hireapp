@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:autoroutetest/_logic/cubit/geo_points_cubit.dart';
+import 'package:autoroutetest/search/search_finals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'dart:convert';
 import 'package:rxdart/rxdart.dart' as rx;
@@ -20,8 +22,24 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
-  late osm.MapController _mapController;
+class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
+  final osm.MapController _mapController = osm.MapController(
+    initMapWithUserPosition:
+        !kDebugMode, //TODO: this might be false, if user searched for specific location
+    initPosition: kDebugMode
+        ? osm.GeoPoint(
+            latitude: 53.63681603225935,
+            longitude: 9.9227556362778,
+          ) //TODO: this might be true, if user searched for specific location
+
+        : null,
+    areaLimit: osm.BoundingBox(
+      east: 5.4922941,
+      north: 20.8084648,
+      south: 20.817995,
+      west: 2.9559113,
+    ),
+  );
   late rx.BehaviorSubject<osm.GeoPoint> _center;
   late Stream<List<DocumentSnapshot<Object?>>> _geopointsStream;
 
@@ -30,38 +48,31 @@ class _MapPageState extends State<MapPage> {
     longitude: 9.9227556362778,
   );
 
+  late osm.GeoPoint _userLocation;
+
   @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
-    print('idDebugMode: $kDebugMode');
-
-    _mapController = osm.MapController(
-      initMapWithUserPosition: kDebugMode ? false : true,
-      initPosition: kDebugMode
-          ? osm.GeoPoint(
-              latitude: 53.63681603225935,
-              longitude: 9.9227556362778,
-            )
-          : null,
-      areaLimit: osm.BoundingBox(
-        east: 5.4922941,
-        north: 20.8084648,
-        south: 20.817995,
-        west: 2.9559113,
-      ),
-    );
-
+    super.initState();
     _center = rx.BehaviorSubject<osm.GeoPoint>.seeded(_defaultCenter);
-
     _geopointsStream = context.read<GeoPointsCubit>().streamGeoPoints(_center);
+  }
 
-    //When user changes center point of map (via swiping)
-    _mapController.listenerRegionIsChanging.addListener(() {
+  void _setClickedListener(BuildContext context) {
+    _mapController.listenerMapSingleTapping.addListener(() {
+      if (_mapController.listenerMapSingleTapping.value != null) {
+        final singleTapGeoPoint =
+            _mapController.listenerMapSingleTapping.value!;
+        print('Single Tap: ${singleTapGeoPoint.toString()}');
+      }
+    });
+  }
+
+  void _setRegionChangingListener(BuildContext context) {
+//When user changes center point of map (via swiping)
+    _mapController.listenerRegionIsChanging.addListener(() async {
       print('region changed!');
       if (_mapController.listenerRegionIsChanging.value != null) {
         final region = _mapController.listenerRegionIsChanging.value!;
@@ -69,43 +80,32 @@ class _MapPageState extends State<MapPage> {
 
         _center.add(region.center);
 
-        for (final gp in context.read<GeoPointsCubit>().geopoints) {
-          print('x');
-        }
+        final List<osm.GeoPoint> staticGeoPointsNearby = await context
+            .read<GeoPointsCubit>()
+            .staticGeoPointsNearby(region, 2000);
 
-        _mapController.setStaticPosition(
-            context
-                .read<GeoPointsCubit>()
-                .geopoints
-                .map((e) =>
-                    osm.GeoPoint(latitude: e.latitude, longitude: e.longitude))
-                .toList(),
-            'test');
+        print('size: ${staticGeoPointsNearby.length}');
+
+        if (staticGeoPointsNearby != null && staticGeoPointsNearby.isNotEmpty) {
+          _mapController.setStaticPosition(
+            staticGeoPointsNearby,
+            SearchFinals.locationDynamics,
+          );
+        }
       }
     });
+  }
 
-    /*
-    //When user is taping on map
-    _mapController.listenerMapSingleTapping.addListener(() {
-      if (_mapController.listenerMapSingleTapping.value != null) {
-        print(_mapController.listenerMapSingleTapping.value!.latitude);
-        
+  void _onGpsFixed(BuildContext context, bool setMarker) async {
+    _userLocation = await _mapController.myLocation();
+    _mapController.goToLocation(_userLocation);
 
-
-      }
-
-      /**
-       * Load here 
-       */
-      _mapController.setStaticPosition([
-        GeoPoint(
-          latitude: 53.55574934435046,
-          longitude: 9.975334883282251,
-        ),
-      ], 'id');
-    });*/
-
-    super.initState();
+    if (setMarker) {
+      _mapController.setStaticPosition(
+        <osm.GeoPoint>[_userLocation],
+        SearchFinals.locationUser,
+      );
+    }
   }
 
   @override
@@ -114,6 +114,12 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(
         leading: const AutoLeadingButton(),
         actions: [
+          IconButton(
+            onPressed: () => _onGpsFixed(context, false),
+            icon: const Icon(
+              Icons.gps_fixed,
+            ),
+          ),
           IconButton(
             onPressed: () {
               context.read<GeoPointsCubit>().uploadPoints();
@@ -127,8 +133,10 @@ class _MapPageState extends State<MapPage> {
               print('Curren location');
               osm.GeoPoint currentGeoPoint = await _mapController.myLocation();
               print('Curren location');
-              context.read<GeoPointsCubit>().loadGeoPointsNearby(
-                  currentGeoPoint.latitude, currentGeoPoint.longitude);
+              if (mounted) {
+                context.read<GeoPointsCubit>().loadGeoPointsNearby(
+                    currentGeoPoint.latitude, currentGeoPoint.longitude);
+              }
             },
             icon: const Icon(
               Icons.download,
@@ -137,6 +145,18 @@ class _MapPageState extends State<MapPage> {
         ],
       ),
       body: osm.OSMFlutter(
+        onMapIsReady: (isMapReady) {
+          print('isMapReady: ${isMapReady}');
+
+          if (isMapReady) {
+            _onGpsFixed(context, true);
+            _setRegionChangingListener(context);
+            _setClickedListener(context);
+          }
+        },
+        onGeoPointClicked: (p0) {
+          print('GeoPoint clicked!');
+        },
         mapIsLoading: Container(
           height: MediaQuery.of(context).size.height -
               AppBar().preferredSize.height,
@@ -147,16 +167,41 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
         ),
-        androidHotReloadSupport: true,
+        androidHotReloadSupport: kDebugMode,
         controller: _mapController,
         trackMyPosition: false,
         initZoom: 14,
         minZoomLevel: 5,
         maxZoomLevel: 19,
         stepZoom: 1.0,
+        isPicker: false,
         showZoomController: true,
         showContributorBadgeForOSM: false,
-        showDefaultInfoWindow: true,
+        showDefaultInfoWindow: false,
+        staticPoints: [
+          osm.StaticPositionGeoPoint(
+            SearchFinals.locationUser,
+            const osm.MarkerIcon(
+              icon: Icon(
+                Icons.person_pin_circle,
+                size: 48,
+                color: Colors.red,
+              ),
+            ),
+            <osm.GeoPoint>[],
+          ),
+          osm.StaticPositionGeoPoint(
+            SearchFinals.locationDynamics,
+            const osm.MarkerIcon(
+              icon: Icon(
+                Icons.pin_drop,
+                size: 48,
+                color: Colors.green,
+              ),
+            ),
+            <osm.GeoPoint>[],
+          ),
+        ],
         userLocationMarker: osm.UserLocationMaker(
           personMarker: const osm.MarkerIcon(
             icon: Icon(
@@ -193,5 +238,11 @@ class _MapPageState extends State<MapPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
   }
 }

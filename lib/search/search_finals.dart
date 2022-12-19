@@ -1,4 +1,3 @@
-
 /**
  * Basic search options.
  * These fields are representing only the identifier (Strings) of those objects.
@@ -6,7 +5,7 @@
  * They are used in SearchPage and stored user searches.
  */
 class SearchFinals {
-  static const String query = 'query';
+  static const String service = 'service';
   static const String postalCode = 'postalCode';
 
   static const String pricemin = 'pricemin';
@@ -20,6 +19,8 @@ class SearchFinals {
    *
    */
 
+  static const String locationUser = "locationUser";
+  static const String locationDynamics = "locationDynamics";
 }
 
 class AnimalsSearchFinals extends SearchFinals {

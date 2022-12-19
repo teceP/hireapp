@@ -4,9 +4,16 @@ import 'package:autoroutetest/commons/paging_scroll_physics.dart';
 import 'package:autoroutetest/commons/scrolling_behavior.dart';
 import 'package:autoroutetest/home/home_data.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
+import 'package:autoroutetest/search/search_model.dart';
 import 'package:autoroutetest/search/search_popup.dart';
+import 'package:autoroutetest/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
+
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +24,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final _tabBarViewHeight = 315.0;
+  final SearchModel _searchModel = SearchModel();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +83,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           elevation: AppFinals.elevation,
           shape: RoundedRectangleBorder(
             side: const BorderSide(
-              color: Color.fromARGB(255, 255, 152, 49),
+              color: AppFinals.frameColor,
               width: 2.0,
               strokeAlign: StrokeAlign.center,
             ),
@@ -80,6 +93,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           child: Column(
             children: [
+              /**
+               * Service...
+               */
               InkWell(
                 onTap: (() {}),
                 borderRadius: const BorderRadius.only(
@@ -91,25 +107,136 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: ListTile(
                   minLeadingWidth: 10,
                   leading: GestureDetector(
-                    onTap: (() {
-                      showSearch(context: context, delegate: SearchPopup());
+                    onTap: (() async {
+                      final searchResult = await showSearch(
+                        context: context,
+                        delegate: SearchPopup(
+                          searchType: SearchType.service,
+                          hintText: SearchType.service.hintText(),
+                        ),
+                      );
+
+                      if (searchResult != null) {
+                        if (kDebugMode) {
+                          print('Service SearchResult: $searchResult');
+                        }
+                        //... do something with result.
+                      }
                     }),
                     child: HomeData.searchObjects[0].leading,
                   ),
-                  title: Hero(
-                    tag: 'searchBar',
-                    child: GestureDetector(
-                      onTap: (() {
-                        showSearch(context: context, delegate: SearchPopup());
-                      }),
-                      child: HomeData.searchObjects[0].title,
-                    ),
+                  title: GestureDetector(
+                    onTap: (() async {
+                      final searchResult = await showSearch(
+                        context: context,
+                        delegate: SearchPopup(
+                          searchType: SearchType.service,
+                          hintText: SearchType.service.hintText(),
+                        ),
+                      );
+
+                      if (searchResult != null) {
+                        if (kDebugMode) {
+                          print('Service SearchResult: $searchResult');
+                        }
+                        //... do something with result.
+
+                        setState(() {
+                          _searchModel.service = searchResult;
+                        });
+                      }
+                    }),
+                    child: Text(_searchModel
+                        .service), //HomeData.searchObjects[0].title,
                   ),
-                  trailing: GestureDetector(
+                  trailing:
+                      null, /*GestureDetector(
                     onTap: () {
-                      print('micro:)');
+                      print('micro');
                     },
                     child: HomeData.searchObjects[0].trailing,
+                  ),*/
+                ),
+              ),
+              const Divider(
+                color: Colors.black26,
+                height: 2,
+              ),
+              /**
+               * Address...
+               */
+              InkWell(
+                onTap: (() {}),
+                child: ListTile(
+                  minLeadingWidth: 10,
+                  leading: GestureDetector(
+                    onTap: (() async {
+                      final addressSearchResult = await showSearch(
+                        context: context,
+                        delegate: SearchPopup(
+                          searchType: SearchType.location,
+                          hintText: SearchType.location.hintText(),
+                        ),
+                      );
+
+                      if (addressSearchResult != null) {
+                        final osm.GeoPoint geoPointResult = addressSearchResult;
+
+                        if (kDebugMode) {
+                          print('Location SearchResult: $geoPointResult');
+                        }
+                        //... do something with result.
+                        setState(() {
+                          _searchModel.addressLatLong = geoPointResult;
+                          //temporary...
+                          if (kDebugMode) {
+                            print(
+                                'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                          }
+                          _searchModel.address =
+                              '${geoPointResult.latitude}, ${geoPointResult.longitude}';
+                        });
+                      }
+                    }),
+                    child: HomeData.searchObjects[2].leading,
+                  ),
+                  title: GestureDetector(
+                    onTap: (() async {
+                      final addressSearchResult = await showSearch(
+                        context: context,
+                        delegate: SearchPopup(
+                          searchType: SearchType.location,
+                          hintText: SearchType.location.hintText(),
+                        ),
+                      );
+
+                      if (addressSearchResult != null) {
+                        final osm.GeoPoint geoPointResult = addressSearchResult;
+                        if (kDebugMode) {
+                          print('Location SearchResult: $geoPointResult');
+                        }
+                        //... do something with result.
+                        setState(() {
+                          _searchModel.addressLatLong = geoPointResult;
+
+                          //temporary...
+                          if (kDebugMode) {
+                            print(
+                                'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                          }
+                          _searchModel.address =
+                              '${geoPointResult.latitude}, ${geoPointResult.longitude}';
+                        });
+                      }
+                    }),
+                    child: Text(
+                        '${_searchModel.address} - ${_searchModel.distance} km Umkreis'), //HomeData.searchObjects[2].title,
+                  ),
+                  trailing: GestureDetector(
+                    onTap: showDistanceDialog,
+                    child: const Icon(
+                      FontAwesomeIcons.airbnb,
+                    ),
                   ),
                 ),
               ),
@@ -117,34 +244,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 color: Colors.black26,
                 height: 2,
               ),
+              /**
+               * DateTime...
+               */
               InkWell(
-                onTap: (() {}),
+                onTap: showDateDialog,
                 child: ListTile(
                   minLeadingWidth: 10,
-                  leading: HomeData.searchObjects[1].leading,
-                  title: HomeData.searchObjects[1].title,
-                  trailing: HomeData.searchObjects[1].trailing,
-                ),
-              ),
-              const Divider(
-                color: Colors.black26,
-                height: 2,
-              ),
-              InkWell(
-                onTap: (() {}),
-                child: ListTile(
-                  minLeadingWidth: 10,
-                  leading: HomeData.searchObjects[2].leading,
-                  title: HomeData.searchObjects[2].title,
-                  trailing: HomeData.searchObjects[2].trailing,
+                  leading: const Icon(Icons.calendar_month),
+                  title: GestureDetector(
+                    child: Text(
+                      Utils.formatDate(_searchModel.dateTime),
+                    ),
+                  ),
+                  /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
+                  trailing: null,
                 ),
               ),
               ElevatedButton(
                 onPressed: () {
                   context.router.push(
                     SearchRouter(
-                      query: 'friseur',
-                      postalCode: 12345,
+                      service: _searchModel.service,
+                      distance: _searchModel.distance,
+                      dateAsInt: _searchModel.dateTime.millisecondsSinceEpoch,
+                      latitude: _searchModel.addressLatLong.latitude,
+                      longitude: _searchModel.addressLatLong.longitude,
                     ),
                   );
                 },
@@ -155,7 +280,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       bottomRight: Radius.circular(10),
                     ),
                   ),
-                  backgroundColor: Colors.blue[800],
+                  backgroundColor: AppFinals.buttonColor,
                   minimumSize: Size.zero, // Set this
                   padding: const EdgeInsets.symmetric(
                       horizontal: 0, vertical: 20), // and this
@@ -177,6 +302,105 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       );
+
+  void updateView(int distance) {}
+
+  void showDistanceDialog() async {
+    final int originDistance = _searchModel.distance;
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Maximaler Umkreis ${_searchModel.distance} km'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: AppFinals.horizontalPadding,
+                  ),
+                  const Text('1'),
+                  Expanded(
+                    child: Slider(
+                      min: 1,
+                      max: 25,
+                      value: _searchModel.distance.toDouble(),
+                      onChanged: (value) => setState(
+                        () => _searchModel.distance = value.toInt(),
+                      ),
+                    ),
+                  ),
+                  const Text('25'),
+                  const SizedBox(
+                    width: AppFinals.horizontalPadding,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: AppFinals.commonWidgetDistance,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _searchModel.distance = originDistance;
+                      context.router.pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade100),
+                    child: const Text(
+                      'Abbrechen',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: AppFinals.commonButtonDistance,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.router.pop();
+                    },
+                    child: const Text('OK '),
+                  ),
+                  const SizedBox(
+                    width: AppFinals.horizontalPadding,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    setState(() {
+      //so distance gets refreshed
+    });
+  }
+
+  void showDateDialog() async {
+    final lastDate = DateTime.now().add(
+      const Duration(
+        days: 365,
+      ),
+    );
+    final chosenDate = await showDialog<DateTime?>(
+      context: context,
+      builder: (context) => DatePickerDialog(
+          initialDate: _searchModel.dateTime,
+          firstDate: DateTime.now(),
+          lastDate: lastDate),
+    );
+
+    if (chosenDate != null) {
+      print('Chosen Date: $chosenDate');
+      setState(() {
+        _searchModel.dateTime = chosenDate;
+      });
+    }
+  }
 
   // ignore: non_constant_identifier_names
   Widget _2_buildTab(BuildContext context) => DefaultTabController(
@@ -230,7 +454,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             physics: PagingScrollPhysics(
               parent: const BouncingScrollPhysics(),
-              itemDimension: MediaQuery.of(context).size.width * 0.8,
+              itemDimension: MediaQuery.of(context).size.width * 0.83,
             ),
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
