@@ -4,12 +4,14 @@ import 'package:autoroutetest/commons/paging_scroll_physics.dart';
 import 'package:autoroutetest/commons/scrolling_behavior.dart';
 import 'package:autoroutetest/home/home_data.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
+import 'package:autoroutetest/search/search_cubit.dart';
 import 'package:autoroutetest/search/search_model.dart';
 import 'package:autoroutetest/search/search_popup.dart';
 import 'package:autoroutetest/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:math' as math;
 
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
@@ -75,232 +77,238 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       );
 
   // ignore: non_constant_identifier_names
-  Widget _0_buildSearch(BuildContext context) => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppFinals.horizontalPadding),
-        child: Card(
-          margin: EdgeInsets.zero,
-          elevation: AppFinals.elevation,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: AppFinals.frameColor,
-              width: 2.0,
-              strokeAlign: StrokeAlign.center,
-            ),
-            borderRadius: BorderRadius.circular(
-              10,
-            ),
-          ),
-          child: Column(
-            children: [
-              /**
+  Widget _0_buildSearch(BuildContext context) =>
+      BlocBuilder<SearchCubit, SearchModel>(
+        builder: (context, state) {
+          print('bloc rebuilt');
+          final searchState = state;
+          print('query by cubit: ${searchState.query}');
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppFinals.horizontalPadding),
+            child: Card(
+              margin: EdgeInsets.zero,
+              elevation: AppFinals.elevation,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(
+                  color: AppFinals.frameColor,
+                  width: 2.0,
+                  strokeAlign: StrokeAlign.center,
+                ),
+                borderRadius: BorderRadius.circular(
+                  10,
+                ),
+              ),
+              child: Column(
+                children: [
+                  /**
                * Service...
                */
-              InkWell(
-                onTap: (() {}),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(
-                    10,
-                  ),
-                ),
-                child: ListTile(
-                  minLeadingWidth: 10,
-                  leading: GestureDetector(
-                    onTap: (() async {
-                      final searchResult = await showSearch(
-                        context: context,
-                        delegate: SearchPopup(
-                          searchType: SearchType.service,
-                          hintText: SearchType.service.hintText(),
-                        ),
-                      );
+                  InkWell(
+                    onTap: (() {}),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(
+                        10,
+                      ),
+                    ),
+                    child: ListTile(
+                      minLeadingWidth: 10,
+                      leading: GestureDetector(
+                        onTap: (() async {
+                          final searchResult = await showSearch(
+                            context: context,
+                            delegate: SearchPopup(
+                              searchType: SearchType.service,
+                              hintText: SearchType.service.hintText(),
+                            ),
+                          );
 
-                      if (searchResult != null) {
-                        if (kDebugMode) {
-                          print('Service SearchResult: $searchResult');
-                        }
-                        //... do something with result.
-                      }
-                    }),
-                    child: HomeData.searchObjects[0].leading,
-                  ),
-                  title: GestureDetector(
-                    onTap: (() async {
-                      final searchResult = await showSearch(
-                        context: context,
-                        delegate: SearchPopup(
-                          searchType: SearchType.service,
-                          hintText: SearchType.service.hintText(),
-                        ),
-                      );
+                          if (searchResult != null) {
+                            if (kDebugMode) {
+                              print('Service SearchResult: $searchResult');
+                            }
+                            //... do something with result.
+                            //searchState.query = searchResult;
+                            print('saved2');
+                            context.read<SearchCubit>().setQuery(searchResult);
+                          }
+                        }),
+                        child: const Icon(Icons.search),
+                      ),
+                      title: GestureDetector(
+                        onTap: (() async {
+                          final searchResult = await showSearch(
+                            context: context,
+                            delegate: SearchPopup(
+                              searchType: SearchType.service,
+                              hintText: SearchType.service.hintText(),
+                            ),
+                          );
 
-                      if (searchResult != null) {
-                        if (kDebugMode) {
-                          print('Service SearchResult: $searchResult');
-                        }
-                        //... do something with result.
+                          if (searchResult != null) {
+                            if (kDebugMode) {
+                              print('Service SearchResult: $searchResult');
+                            }
 
-                        setState(() {
-                          _searchModel.service = searchResult;
-                        });
-                      }
-                    }),
-                    child: Text(_searchModel
-                        .service), //HomeData.searchObjects[0].title,
+                            print('saved');
+                            //... do something with result.
+                            context.read<SearchCubit>().setQuery(searchResult);
+                          }
+                        }),
+                        child: Text(context.watch<SearchCubit>().state.query),
+                      ),
+                      trailing: null,
+                    ),
                   ),
-                  trailing:
-                      null, /*GestureDetector(
-                    onTap: () {
-                      print('micro');
-                    },
-                    child: HomeData.searchObjects[0].trailing,
-                  ),*/
-                ),
-              ),
-              const Divider(
-                color: Colors.black26,
-                height: 2,
-              ),
-              /**
+                  const Divider(
+                    color: Colors.black26,
+                    height: 2,
+                  ),
+                  /**
                * Address...
                */
-              InkWell(
-                onTap: (() {}),
-                child: ListTile(
-                  minLeadingWidth: 10,
-                  leading: GestureDetector(
-                    onTap: (() async {
-                      final addressSearchResult = await showSearch(
-                        context: context,
-                        delegate: SearchPopup(
-                          searchType: SearchType.location,
-                          hintText: SearchType.location.hintText(),
-                        ),
-                      );
+                  InkWell(
+                    onTap: (() {}),
+                    child: ListTile(
+                      minLeadingWidth: 10,
+                      leading: GestureDetector(
+                        onTap: (() async {
+                          final addressSearchResult = await showSearch(
+                            context: context,
+                            delegate: SearchPopup(
+                              searchType: SearchType.location,
+                              hintText: SearchType.location.hintText(),
+                            ),
+                          );
 
-                      if (addressSearchResult != null) {
-                        final osm.GeoPoint geoPointResult = addressSearchResult;
+                          if (addressSearchResult != null) {
+                            final osm.GeoPoint geoPointResult =
+                                addressSearchResult;
 
-                        if (kDebugMode) {
-                          print('Location SearchResult: $geoPointResult');
-                        }
-                        //... do something with result.
-                        setState(() {
-                          _searchModel.addressLatLong = geoPointResult;
-                          //temporary...
-                          if (kDebugMode) {
-                            print(
-                                'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                            if (kDebugMode) {
+                              print('Location SearchResult: $geoPointResult');
+                            }
+                            //... do something with result.
+                            setState(() {
+                              _searchModel.addressLatLong = geoPointResult;
+                              //temporary...
+                              if (kDebugMode) {
+                                print(
+                                    'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                              }
+                              _searchModel.address =
+                                  '${geoPointResult.latitude}, ${geoPointResult.longitude}';
+                            });
                           }
-                          _searchModel.address =
-                              '${geoPointResult.latitude}, ${geoPointResult.longitude}';
-                        });
-                      }
-                    }),
-                    child: HomeData.searchObjects[2].leading,
-                  ),
-                  title: GestureDetector(
-                    onTap: (() async {
-                      final addressSearchResult = await showSearch(
-                        context: context,
-                        delegate: SearchPopup(
-                          searchType: SearchType.location,
-                          hintText: SearchType.location.hintText(),
-                        ),
-                      );
+                        }),
+                        child: HomeData.searchObjects[2].leading,
+                      ),
+                      title: GestureDetector(
+                        onTap: (() async {
+                          final addressSearchResult = await showSearch(
+                            context: context,
+                            delegate: SearchPopup(
+                              searchType: SearchType.location,
+                              hintText: SearchType.location.hintText(),
+                            ),
+                          );
 
-                      if (addressSearchResult != null) {
-                        final osm.GeoPoint geoPointResult = addressSearchResult;
-                        if (kDebugMode) {
-                          print('Location SearchResult: $geoPointResult');
-                        }
-                        //... do something with result.
-                        setState(() {
-                          _searchModel.addressLatLong = geoPointResult;
+                          if (addressSearchResult != null) {
+                            final osm.GeoPoint geoPointResult =
+                                addressSearchResult;
+                            if (kDebugMode) {
+                              print('Location SearchResult: $geoPointResult');
+                            }
+                            //... do something with result.
+                            setState(() {
+                              _searchModel.addressLatLong = geoPointResult;
 
-                          //temporary...
-                          if (kDebugMode) {
-                            print(
-                                'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                              //temporary...
+                              if (kDebugMode) {
+                                print(
+                                    'set address temporarly to lat lon. should convert lat lon to address string here later.');
+                              }
+                              _searchModel.address =
+                                  '${geoPointResult.latitude}, ${geoPointResult.longitude}';
+                            });
                           }
-                          _searchModel.address =
-                              '${geoPointResult.latitude}, ${geoPointResult.longitude}';
-                        });
-                      }
-                    }),
-                    child: Text(
-                        '${_searchModel.address} - ${_searchModel.distance} km Umkreis'), //HomeData.searchObjects[2].title,
-                  ),
-                  trailing: GestureDetector(
-                    onTap: showDistanceDialog,
-                    child: const Icon(
-                      FontAwesomeIcons.airbnb,
-                    ),
-                  ),
-                ),
-              ),
-              const Divider(
-                color: Colors.black26,
-                height: 2,
-              ),
-              /**
-               * DateTime...
-               */
-              InkWell(
-                onTap: showDateDialog,
-                child: ListTile(
-                  minLeadingWidth: 10,
-                  leading: const Icon(Icons.calendar_month),
-                  title: GestureDetector(
-                    child: Text(
-                      Utils.formatDate(_searchModel.dateTime),
-                    ),
-                  ),
-                  /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
-                  trailing: null,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.router.push(
-                    SearchRouter(
-                      service: _searchModel.service,
-                      distance: _searchModel.distance,
-                      dateAsInt: _searchModel.dateTime.millisecondsSinceEpoch,
-                      latitude: _searchModel.addressLatLong.latitude,
-                      longitude: _searchModel.addressLatLong.longitude,
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                  ),
-                  backgroundColor: AppFinals.buttonColor,
-                  minimumSize: Size.zero, // Set this
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 0, vertical: 20), // and this
-                ),
-                child: const SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                    child: Text(
-                      'Suchen',
-                      style: TextStyle(
-                        //fontWeight: FontWeight.bold,
-                        fontSize: AppFinals.textSizeButton,
+                        }),
+                        child: Text(
+                            '${_searchModel.address} - ${_searchModel.distance} km Umkreis'), //HomeData.searchObjects[2].title,
+                      ),
+                      trailing: GestureDetector(
+                        onTap: showDistanceDialog,
+                        child: const Icon(
+                          FontAwesomeIcons.airbnb,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const Divider(
+                    color: Colors.black26,
+                    height: 2,
+                  ),
+                  /**
+               * DateTime...
+               */
+                  InkWell(
+                    onTap: showDateDialog,
+                    child: ListTile(
+                      minLeadingWidth: 10,
+                      leading: const Icon(Icons.calendar_month),
+                      title: GestureDetector(
+                        child: Text(
+                          Utils.formatDate(_searchModel.dateTime),
+                        ),
+                      ),
+                      /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
+                      trailing: null,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.router.push(
+                        SearchRouter(
+                          service: _searchModel.query,
+                          distance: _searchModel.distance,
+                          dateAsInt:
+                              _searchModel.dateTime.millisecondsSinceEpoch,
+                          latitude: _searchModel.addressLatLong.latitude,
+                          longitude: _searchModel.addressLatLong.longitude,
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                      backgroundColor: AppFinals.buttonColor,
+                      minimumSize: Size.zero, // Set this
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 20), // and this
+                    ),
+                    child: const SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Suchen',
+                          style: TextStyle(
+                            //fontWeight: FontWeight.bold,
+                            fontSize: AppFinals.textSizeButton,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       );
 
   void updateView(int distance) {}
