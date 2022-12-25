@@ -7,11 +7,23 @@ import 'package:autoroutetest/home/tabbar/tab_bar_data.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
 import 'package:autoroutetest/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
+
+  RelativeRect getRelativeRect(BuildContext context) {
+    final renderSliverList = context.findRenderObject() as RenderSliverList;
+
+    print('TODO get relative rect of child');
+    if (renderSliverList != null) {
+      //renderSliverList.indexOf(0);
+    }
+
+    return const RelativeRect.fromLTRB(0, 0, 0, 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +37,27 @@ class FavoritesPage extends StatelessWidget {
           padding: EdgeInsets.only(
               top: 10,
               bottom: (index == (TabBarData.animals.length - 1)) ? 10 : 0),
-          child: PreviewCard(
-            item: TabBarData.animals[index],
-            shopId: '54321',
-            height: Utils.h(context) * 0.3,
-            tabBarDataIndex: index,
+          child: GestureDetector(
+            onLongPress: (() {
+              showMenu(
+                  context: context,
+                  position: getRelativeRect(context),
+                  items: <PopupMenuEntry>[
+                    PopupMenuItem(
+                        child: const Text(
+                          'Entfernen',
+                        ),
+                        onTap: () {
+                          print('To be implemented');
+                        }),
+                  ]);
+            }),
+            child: PreviewCard(
+              item: TabBarData.animals[index],
+              shopId: '54321',
+              height: Utils.h(context) * 0.3,
+              tabBarDataIndex: index,
+            ),
           ),
         ),
       ),

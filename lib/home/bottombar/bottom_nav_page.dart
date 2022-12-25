@@ -30,7 +30,7 @@ class BottomNavPage extends StatelessWidget {
                   ],
                 ),
               ),
-              icon: const Icon(Icons.chat_bubble),
+              icon: const Icon(Icons.local_post_office),
             ),
           ],
         );

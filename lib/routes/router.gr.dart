@@ -59,20 +59,14 @@ class AppRouter extends _i16.RootStackRouter {
       final queryParams = routeData.queryParams;
       final args = routeData.argsAs<SearchRouterArgs>(
           orElse: () => SearchRouterArgs(
-                service: queryParams.optString('service'),
-                latitude: queryParams.optDouble('latitude'),
-                longitude: queryParams.optDouble('longitude'),
-                distance: queryParams.optInt('distance'),
-                dateAsInt: queryParams.optInt('dateAsInt'),
-              ));
+                  id: queryParams.getInt(
+                'id',
+                0,
+              )));
       return _i16.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i3.SearchPage(
-          service: args.service,
-          latitude: args.latitude,
-          longitude: args.longitude,
-          distance: args.distance,
-          dateAsInt: args.dateAsInt,
+          id: args.id,
           key: args.key,
         ),
       );
@@ -334,30 +328,16 @@ class ShopRouterArgs {
 /// [_i3.SearchPage]
 class SearchRouter extends _i16.PageRouteInfo<SearchRouterArgs> {
   SearchRouter({
-    String? service,
-    double? latitude,
-    double? longitude,
-    int? distance,
-    int? dateAsInt,
+    int id = 0,
     _i18.Key? key,
   }) : super(
           SearchRouter.name,
           path: '/search',
           args: SearchRouterArgs(
-            service: service,
-            latitude: latitude,
-            longitude: longitude,
-            distance: distance,
-            dateAsInt: dateAsInt,
+            id: id,
             key: key,
           ),
-          rawQueryParams: {
-            'service': service,
-            'latitude': latitude,
-            'longitude': longitude,
-            'distance': distance,
-            'dateAsInt': dateAsInt,
-          },
+          rawQueryParams: {'id': id},
         );
 
   static const String name = 'SearchRouter';
@@ -365,29 +345,17 @@ class SearchRouter extends _i16.PageRouteInfo<SearchRouterArgs> {
 
 class SearchRouterArgs {
   const SearchRouterArgs({
-    this.service,
-    this.latitude,
-    this.longitude,
-    this.distance,
-    this.dateAsInt,
+    this.id = 0,
     this.key,
   });
 
-  final String? service;
-
-  final double? latitude;
-
-  final double? longitude;
-
-  final int? distance;
-
-  final int? dateAsInt;
+  final int id;
 
   final _i18.Key? key;
 
   @override
   String toString() {
-    return 'SearchRouterArgs{service: $service, latitude: $latitude, longitude: $longitude, distance: $distance, dateAsInt: $dateAsInt, key: $key}';
+    return 'SearchRouterArgs{id: $id, key: $key}';
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
+import 'package:osm_nominatim/osm_nominatim.dart';
 
 enum SearchType {
   location,
@@ -62,14 +63,19 @@ class SearchPopup extends SearchDelegate {
       if (searchType == SearchType.location)
         IconButton(
           onPressed: () async {
-            final location =
-                await osm.showSimplePickerLocation(context: context);
+            final location = await osm.showSimplePickerLocation(
+              context: context,
+              minZoomLevel: 12,
+              initZoom: 15,
+            );
+
             if (location != null) {
               if (kDebugMode) {
                 print('location not null: $location');
                 print('location: ${location.latitude}, ${location.longitude}');
                 print('Close due to picked location...');
               }
+
               close(context, location);
             }
           },
@@ -94,8 +100,10 @@ class SearchPopup extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final suggestions =
-        _dummySearchList.where((element) => element.contains(query)).toList();
+    final suggestions = _dummySearchList
+        .where((element) => element.contains(query))
+        .toList()
+      ..add(query);
     return ListView.builder(
       itemCount: suggestions.length,
       itemBuilder: (context, index) => ListTile(
@@ -116,8 +124,10 @@ class SearchPopup extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions =
-        _dummySearchList.where((element) => element.contains(query)).toList();
+    final suggestions = _dummySearchList
+        .where((element) => element.contains(query))
+        .toList()
+      ..add(query);
 
     return ListView.builder(
       itemCount: suggestions.length,

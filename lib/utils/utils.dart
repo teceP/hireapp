@@ -1,6 +1,34 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 
 class Utils {
+  static String buildAddressText(Place place) {
+    if (place.address == null) {
+      return '${place.lat}, ${place.lon}';
+    }
+
+    if (kDebugMode) {
+      print(place.address!);
+    }
+
+    final street =
+        place.address!['road'] != null ? (place.address!['road'] + ', ') : '';
+
+    final postalcode = place.address!['postcode'] != null
+        ? (place.address!['postcode'] + ' ')
+        : '';
+
+    final city =
+        place.address!['city'] != null ? (place.address!['city'] + ' ') : '';
+
+    return street + postalcode + city;
+  }
+
+  static Future<Place> reverseLatLong(double lat, double lon) {
+    return Nominatim.reverseSearch(lat: lat, lon: lon);
+  }
+
   static bool isChosenDateZeroTime(DateTime other) {
     print(other.toIso8601String());
 

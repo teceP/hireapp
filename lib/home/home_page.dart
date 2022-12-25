@@ -4,18 +4,18 @@ import 'package:autoroutetest/commons/paging_scroll_physics.dart';
 import 'package:autoroutetest/commons/scrolling_behavior.dart';
 import 'package:autoroutetest/home/home_data.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
-import 'package:autoroutetest/search/search_cubit.dart';
-import 'package:autoroutetest/search/search_model.dart';
+import 'package:autoroutetest/search/home_query_cubit.dart';
+import 'package:autoroutetest/search/query_cubit.dart';
+import 'package:autoroutetest/search/query_model.dart';
 import 'package:autoroutetest/search/search_popup.dart';
 import 'package:autoroutetest/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:math' as math;
 
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart' as osm;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,7 +26,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final _tabBarViewHeight = 315.0;
-  final SearchModel _searchModel = SearchModel();
 
   @override
   void initState() {
@@ -41,7 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _0_buildSearch(context),
+          _01_buildSearch(context),
           const SizedBox(
             height: 20,
           ),
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           const SizedBox(
             height: 10,
           ),
-          _x_buildText(context, 'Ihre Suche fortsetzen'),
+          _x_buildText(context, 'Deine Suche fortsetzen'),
           const SizedBox(
             height: 10,
           ),
@@ -76,319 +75,276 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
-  // ignore: non_constant_identifier_names
-  Widget _0_buildSearch(BuildContext context) =>
-      BlocBuilder<SearchCubit, SearchModel>(
-        builder: (context, state) {
-          print('bloc rebuilt');
-          final searchState = state;
-          print('query by cubit: ${searchState.query}');
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppFinals.horizontalPadding),
-            child: Card(
-              margin: EdgeInsets.zero,
-              elevation: AppFinals.elevation,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(
-                  color: AppFinals.frameColor,
-                  width: 2.0,
-                  strokeAlign: StrokeAlign.center,
-                ),
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
+  Widget _01_buildSearch(BuildContext context) =>
+      BlocBuilder<HomeQueryCubit, QueryModel>(
+        builder: (context, homeQueryState) => Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppFinals.horizontalPadding),
+          child: Card(
+            margin: EdgeInsets.zero,
+            elevation: AppFinals.elevation,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                color: AppFinals.frameColor,
+                width: 2.0,
+                strokeAlign: StrokeAlign.center,
               ),
-              child: Column(
-                children: [
-                  /**
-               * Service...
-               */
-                  InkWell(
-                    onTap: (() {}),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(
-                        10,
-                      ),
-                    ),
-                    child: ListTile(
-                      minLeadingWidth: 10,
-                      leading: GestureDetector(
-                        onTap: (() async {
-                          final searchResult = await showSearch(
-                            context: context,
-                            delegate: SearchPopup(
-                              searchType: SearchType.service,
-                              hintText: SearchType.service.hintText(),
-                            ),
-                          );
-
-                          if (searchResult != null) {
-                            if (kDebugMode) {
-                              print('Service SearchResult: $searchResult');
-                            }
-                            //... do something with result.
-                            //searchState.query = searchResult;
-                            print('saved2');
-                            context.read<SearchCubit>().setQuery(searchResult);
-                          }
-                        }),
-                        child: const Icon(Icons.search),
-                      ),
-                      title: GestureDetector(
-                        onTap: (() async {
-                          final searchResult = await showSearch(
-                            context: context,
-                            delegate: SearchPopup(
-                              searchType: SearchType.service,
-                              hintText: SearchType.service.hintText(),
-                            ),
-                          );
-
-                          if (searchResult != null) {
-                            if (kDebugMode) {
-                              print('Service SearchResult: $searchResult');
-                            }
-
-                            print('saved');
-                            //... do something with result.
-                            context.read<SearchCubit>().setQuery(searchResult);
-                          }
-                        }),
-                        child: Text(context.watch<SearchCubit>().state.query),
-                      ),
-                      trailing: null,
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.black26,
-                    height: 2,
-                  ),
-                  /**
-               * Address...
-               */
-                  InkWell(
-                    onTap: (() {}),
-                    child: ListTile(
-                      minLeadingWidth: 10,
-                      leading: GestureDetector(
-                        onTap: (() async {
-                          final addressSearchResult = await showSearch(
-                            context: context,
-                            delegate: SearchPopup(
-                              searchType: SearchType.location,
-                              hintText: SearchType.location.hintText(),
-                            ),
-                          );
-
-                          if (addressSearchResult != null) {
-                            final osm.GeoPoint geoPointResult =
-                                addressSearchResult;
-
-                            if (kDebugMode) {
-                              print('Location SearchResult: $geoPointResult');
-                            }
-                            //... do something with result.
-                            setState(() {
-                              _searchModel.addressLatLong = geoPointResult;
-                              //temporary...
-                              if (kDebugMode) {
-                                print(
-                                    'set address temporarly to lat lon. should convert lat lon to address string here later.');
-                              }
-                              _searchModel.address =
-                                  '${geoPointResult.latitude}, ${geoPointResult.longitude}';
-                            });
-                          }
-                        }),
-                        child: HomeData.searchObjects[2].leading,
-                      ),
-                      title: GestureDetector(
-                        onTap: (() async {
-                          final addressSearchResult = await showSearch(
-                            context: context,
-                            delegate: SearchPopup(
-                              searchType: SearchType.location,
-                              hintText: SearchType.location.hintText(),
-                            ),
-                          );
-
-                          if (addressSearchResult != null) {
-                            final osm.GeoPoint geoPointResult =
-                                addressSearchResult;
-                            if (kDebugMode) {
-                              print('Location SearchResult: $geoPointResult');
-                            }
-                            //... do something with result.
-                            setState(() {
-                              _searchModel.addressLatLong = geoPointResult;
-
-                              //temporary...
-                              if (kDebugMode) {
-                                print(
-                                    'set address temporarly to lat lon. should convert lat lon to address string here later.');
-                              }
-                              _searchModel.address =
-                                  '${geoPointResult.latitude}, ${geoPointResult.longitude}';
-                            });
-                          }
-                        }),
-                        child: Text(
-                            '${_searchModel.address} - ${_searchModel.distance} km Umkreis'), //HomeData.searchObjects[2].title,
-                      ),
-                      trailing: GestureDetector(
-                        onTap: showDistanceDialog,
-                        child: const Icon(
-                          FontAwesomeIcons.airbnb,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.black26,
-                    height: 2,
-                  ),
-                  /**
-               * DateTime...
-               */
-                  InkWell(
-                    onTap: showDateDialog,
-                    child: ListTile(
-                      minLeadingWidth: 10,
-                      leading: const Icon(Icons.calendar_month),
-                      title: GestureDetector(
-                        child: Text(
-                          Utils.formatDate(_searchModel.dateTime),
-                        ),
-                      ),
-                      /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
-                      trailing: null,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.router.push(
-                        SearchRouter(
-                          service: _searchModel.query,
-                          distance: _searchModel.distance,
-                          dateAsInt:
-                              _searchModel.dateTime.millisecondsSinceEpoch,
-                          latitude: _searchModel.addressLatLong.latitude,
-                          longitude: _searchModel.addressLatLong.longitude,
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                      ),
-                      backgroundColor: AppFinals.buttonColor,
-                      minimumSize: Size.zero, // Set this
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 20), // and this
-                    ),
-                    child: const SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Suchen',
-                          style: TextStyle(
-                            //fontWeight: FontWeight.bold,
-                            fontSize: AppFinals.textSizeButton,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              borderRadius: BorderRadius.circular(
+                10,
               ),
             ),
-          );
-        },
-      );
-
-  void updateView(int distance) {}
-
-  void showDistanceDialog() async {
-    final int originDistance = _searchModel.distance;
-    await showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Maximaler Umkreis ${_searchModel.distance} km'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: AppFinals.horizontalPadding,
+            child: Column(
+              children: [
+                /**
+               * Service...
+               */
+                InkWell(
+                  onTap: (() {}),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(
+                      10,
+                    ),
                   ),
-                  const Text('1'),
-                  Expanded(
-                    child: Slider(
-                      min: 1,
-                      max: 25,
-                      value: _searchModel.distance.toDouble(),
-                      onChanged: (value) => setState(
-                        () => _searchModel.distance = value.toInt(),
+                  child: ListTile(
+                    minLeadingWidth: 10,
+                    leading: GestureDetector(
+                      onTap: (() async {
+                        final searchResult = await showSearch(
+                          context: context,
+                          delegate: SearchPopup(
+                            searchType: SearchType.service,
+                            hintText: SearchType.service.hintText(),
+                          ),
+                        );
+
+                        if (searchResult != null) {
+                          if (kDebugMode) {
+                            print('Service SearchResult: $searchResult');
+                          }
+                          //... do something with result.
+                          //searchState.query = searchResult;
+                          context
+                              .read<HomeQueryCubit>()
+                              .updateQuery(searchResult);
+                        }
+                      }),
+                      child: const Icon(Icons.search),
+                    ),
+                    title: GestureDetector(
+                      onTap: (() async {
+                        final searchResult = await showSearch(
+                          context: context,
+                          delegate: SearchPopup(
+                            searchType: SearchType.service,
+                            hintText: SearchType.service.hintText(),
+                          ),
+                        );
+
+                        if (searchResult != null) {
+                          if (kDebugMode) {
+                            print('Service SearchResult: $searchResult');
+                          }
+
+                          //... do something with result.
+                          context
+                              .read<HomeQueryCubit>()
+                              .updateQuery(searchResult);
+                        }
+                      }),
+                      child: Text((context
+                              .watch<HomeQueryCubit>()
+                              .state
+                              .query
+                              .isNotEmpty)
+                          ? context.watch<HomeQueryCubit>().state.query
+                          : 'Wonach suchst du?'),
+                    ),
+                    trailing: null,
+                  ),
+                ),
+                const Divider(
+                  color: Colors.black26,
+                  height: 2,
+                ),
+                /**
+               * Address...
+               */
+                InkWell(
+                  onTap: (() {}),
+                  child: ListTile(
+                    minLeadingWidth: 10,
+                    leading: GestureDetector(
+                      onTap: (() async {
+                        final addressSearchResult = await showSearch(
+                          context: context,
+                          delegate: SearchPopup(
+                            searchType: SearchType.location,
+                            hintText: SearchType.location.hintText(),
+                          ),
+                        );
+
+                        if (addressSearchResult != null) {
+                          final osm.GeoPoint geoPointResult =
+                              addressSearchResult;
+
+                          if (kDebugMode) {
+                            print('Location SearchResult: $geoPointResult');
+                          }
+
+                          //... do something with result.
+                          context.read<HomeQueryCubit>().updateLatLon(
+                              geoPointResult.latitude,
+                              geoPointResult.longitude);
+
+                          print('Resoluting...');
+                          final res = await Nominatim.reverseSearch(
+                              lat: geoPointResult.latitude,
+                              lon: geoPointResult.longitude);
+                          print('finished: ${res.address}');
+                        }
+                      }),
+                      child: HomeData.searchObjects[2].leading,
+                    ),
+                    title: GestureDetector(
+                      onTap: (() async {
+                        final addressSearchResult = await showSearch(
+                          context: context,
+                          delegate: SearchPopup(
+                            searchType: SearchType.location,
+                            hintText: SearchType.location.hintText(),
+                          ),
+                        );
+
+                        if (addressSearchResult != null) {
+                          final osm.GeoPoint geoPointResult =
+                              addressSearchResult;
+                          if (kDebugMode) {
+                            print('Location SearchResult: $geoPointResult');
+                          }
+                          //... do something with result.
+                          context.read<HomeQueryCubit>().updateLatLon(
+                              geoPointResult.latitude,
+                              geoPointResult.longitude);
+                        }
+                      }),
+                      child: FutureBuilder<Place>(
+                        future: Utils.reverseLatLong(
+                            context.read<HomeQueryCubit>().state.lat,
+                            context.read<HomeQueryCubit>().state.lon),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data != null) {
+                            final data = snapshot.data!;
+                            final textAddress =
+                                '${Utils.buildAddressText(data)}';
+                            final textDistance =
+                                '${context.read<HomeQueryCubit>().state.distance} km Umkreis';
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  textAddress,
+                                ),
+                                /*Text(
+                                  textDistance,
+                                ),*/
+                              ],
+                            );
+                          } else {
+                            return Text(
+                                '${context.read<HomeQueryCubit>().state.lat}, ${context.read<HomeQueryCubit>().state.lon} - ${context.read<HomeQueryCubit>().state.distance} km Umkreis');
+                          }
+                        },
+                      ),
+                    ),
+                    trailing:
+                        null, /*GestureDetector(
+                      onTap: showDistanceDialog,
+                      child: const Icon(
+                        FontAwesomeIcons.airbnb,
+                      ),
+                    ),*/
+                  ),
+                ),
+                const Divider(
+                  color: Colors.black26,
+                  height: 2,
+                ),
+                /**
+               * DateTime...
+               */
+                InkWell(
+                  onTap: showDateDialog,
+                  child: ListTile(
+                    minLeadingWidth: 10,
+                    leading: const Icon(Icons.calendar_month),
+                    title: GestureDetector(
+                      child: Text(
+                        Utils.formatDate(
+                          DateTime.fromMillisecondsSinceEpoch(context
+                              .watch<HomeQueryCubit>()
+                              .state
+                              .dateInMillis),
+                        ),
+                      ),
+                    ),
+                    /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
+                    trailing: null,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final homeQueryModel = context.read<HomeQueryCubit>().state;
+                    final id = context
+                        .read<QueryCubit>()
+                        .addQueryModel(homeQueryState);
+
+                    if (id == -2) {
+                      print('ERROR ALERT: ID of Query is -2!');
+                    } else {
+                      context.read<HomeQueryCubit>().backToDefault();
+                    }
+
+                    context.router.push(
+                      SearchRouter(
+                        id: id,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                    backgroundColor: AppFinals.buttonColor,
+                    minimumSize: Size.zero, // Set this
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 0, vertical: 20), // and this
+                  ),
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Center(
+                      child: Text(
+                        'Suchen',
+                        style: TextStyle(
+                          //fontWeight: FontWeight.bold,
+                          fontSize: AppFinals.textSizeButton,
+                        ),
                       ),
                     ),
                   ),
-                  const Text('25'),
-                  const SizedBox(
-                    width: AppFinals.horizontalPadding,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: AppFinals.commonWidgetDistance,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      _searchModel.distance = originDistance;
-                      context.router.pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade100),
-                    child: const Text(
-                      'Abbrechen',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: AppFinals.commonButtonDistance,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.router.pop();
-                    },
-                    child: const Text('OK '),
-                  ),
-                  const SizedBox(
-                    width: AppFinals.horizontalPadding,
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        );
-      },
-    );
-    setState(() {
-      //so distance gets refreshed
-    });
-  }
+        ),
+      );
 
   void showDateDialog() async {
+    final homeQueryState = context.read<HomeQueryCubit>().state;
+
     final lastDate = DateTime.now().add(
       const Duration(
         days: 365,
@@ -397,16 +353,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final chosenDate = await showDialog<DateTime?>(
       context: context,
       builder: (context) => DatePickerDialog(
-          initialDate: _searchModel.dateTime,
+          initialDate:
+              DateTime.fromMillisecondsSinceEpoch(homeQueryState.dateInMillis),
           firstDate: DateTime.now(),
           lastDate: lastDate),
     );
 
     if (chosenDate != null) {
       print('Chosen Date: $chosenDate');
-      setState(() {
-        _searchModel.dateTime = chosenDate;
-      });
+      context
+          .read<HomeQueryCubit>()
+          .updateDateInMillis(chosenDate.millisecondsSinceEpoch);
     }
   }
 

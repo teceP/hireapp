@@ -2,10 +2,15 @@ import 'package:autoroutetest/_logic/cubit/geo_points_cubit.dart';
 import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/default_firebase_options.dart';
 import 'package:autoroutetest/routes/router.gr.dart';
+import 'package:autoroutetest/search/home_query_cubit.dart';
+import 'package:autoroutetest/search/query_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   final _appRouter = AppRouter();
@@ -15,6 +20,11 @@ void main() async {
     //name: 'Hire',
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: kIsWeb
+          ? HydratedStorage.webStorageDirectory
+          : await getApplicationDocumentsDirectory());
 
   runApp(
     HireApp(
@@ -33,6 +43,12 @@ class HireApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => GeoPointsCubit(),
+        ),
+        BlocProvider(
+          create: (context) => QueryCubit(),
+        ),
+        BlocProvider(
+          create: (context) => HomeQueryCubit(),
         ),
       ],
       child: MaterialApp.router(

@@ -7,11 +7,16 @@ class AppFinals {
   static const Color frameColor = Colors.orange;
 
   static const double borderRadius = 10;
+  static const double borderRadiusTextField = 30;
+
   static const double horizontalPadding = 20;
   static const double horizontalPaddingLess = 10;
+  static const double horizontalPaddingTextField = 15;
 
   static const double verticalPadding = 15;
   static const double verticalPaddingAdditional = 5;
+  static const double verticalPaddingTextField = 10;
+
   static const double elevation = 5;
   static const double textSizeButton = 16;
 
@@ -24,4 +29,9 @@ class AppFinals {
 
   static const double iconInTextSize = 16;
   static const double paddingInText = 6;
+
+  ///Following statics are used for search filtering
+  static const int minDistance = 1;
+  static const int maxDistance = 50;
+  static const int defaultDistance = 20;
 }
