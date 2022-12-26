@@ -10,7 +10,6 @@ class HomeQueryCubit extends Cubit<QueryModel> {
           QueryModel(
             id: -1,
             query: '',
-            dateInMillis: DateTime.now().millisecondsSinceEpoch,
             lastModifiedInMillis: DateTime.now().millisecondsSinceEpoch,
             distance: AppFinals.defaultDistance,
             lat: 53.565060266997044,
@@ -23,7 +22,7 @@ class HomeQueryCubit extends Cubit<QueryModel> {
       print('Update query');
     }
 
-    final newQuery = state.copyWith(query: query);
+    final newQuery = state.copyWith(query: query.trim());
     emit(newQuery);
   }
 

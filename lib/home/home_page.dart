@@ -273,7 +273,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 /**
                * DateTime...
                */
-                InkWell(
+                /*InkWell(
                   onTap: showDateDialog,
                   child: ListTile(
                     minLeadingWidth: 10,
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     /*Text("Mi. 14 Dez. - So. 18 Dez."),*/
                     trailing: null,
                   ),
-                ),
+                ),*/
                 ElevatedButton(
                   onPressed: () {
                     final homeQueryModel = context.read<HomeQueryCubit>().state;
@@ -342,7 +342,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
-  void showDateDialog() async {
+  /*void showDateDialog() async {
     final homeQueryState = context.read<HomeQueryCubit>().state;
 
     final lastDate = DateTime.now().add(
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           .read<HomeQueryCubit>()
           .updateDateInMillis(chosenDate.millisecondsSinceEpoch);
     }
-  }
+  }*/
 
   // ignore: non_constant_identifier_names
   Widget _2_buildTab(BuildContext context) => DefaultTabController(

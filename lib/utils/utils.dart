@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 class Utils {
+  static TimeOfDay buildTimeOfDay(int hour, int? minute) =>
+      TimeOfDay(hour: hour, minute: minute ?? 00);
+
   static String buildAddressText(Place place) {
     if (place.address == null) {
       return '${place.lat}, ${place.lon}';
@@ -50,9 +53,9 @@ class Utils {
     return '${_weekdayToWeekdayString(dateTime.weekday)} ${dateTime.day} ${_monthToMonthString(dateTime.month)}';
   }
 
-  static String formatTime(DateTime dateTime) {
+  static String formatTime(TimeOfDay timeOfDay) {
     //15:30
-    return '${dateTime.hour}:${dateTime.minute} Uhr';
+    return '${timeOfDay.hour}:${timeOfDay.minute} Uhr';
   }
 
   static String _weekdayToWeekdayString(int weekday) {

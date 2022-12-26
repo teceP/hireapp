@@ -16,6 +16,7 @@ class AppFinals {
   static const double verticalPadding = 15;
   static const double verticalPaddingAdditional = 5;
   static const double verticalPaddingTextField = 10;
+  static const double bottomSafeAreaPadding = 40;
 
   static const double elevation = 5;
   static const double textSizeButton = 16;
@@ -34,4 +35,7 @@ class AppFinals {
   static const int minDistance = 1;
   static const int maxDistance = 50;
   static const int defaultDistance = 20;
+
+  static const double minPrice = 1;
+  static const double maxPrice = 500;
 }

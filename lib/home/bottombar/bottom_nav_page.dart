@@ -20,7 +20,7 @@ class BottomNavPage extends StatelessWidget {
             style: AppFinals.appNameTextStyle,
           ),
           centerTitle: true,
-          leading: const AutoLeadingButton(),
+          //leading: const AutoLeadingButton(), //causes bug: sometimes appears on homepages and removes overlays on drawer
           actions: [
             IconButton(
               onPressed: () => context.router.navigate(

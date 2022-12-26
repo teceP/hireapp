@@ -28,7 +28,7 @@ class QueryCubit extends Cubit<List<QueryModel>> {
       final newId = (getLatestId() + 1);
       final newQuery = QueryModel(
           id: newId,
-          query: queryModel.query,
+          query: queryModel.query.trim(),
           dateInMillis: queryModel.dateInMillis,
           lastModifiedInMillis: queryModel.lastModifiedInMillis,
           lat: queryModel.lat,
@@ -65,6 +65,10 @@ class QueryCubit extends Cubit<List<QueryModel>> {
     emit(List.from(state..add(queryModel)));
   }
 
+  void test() {
+    print('ok');
+  }
+
   /**
    * Modify single query model by id functions
    */
@@ -85,7 +89,7 @@ class QueryCubit extends Cubit<List<QueryModel>> {
     }
 
     final stateById = getStateById(id);
-    final updatedQuery = stateById.copyWith(query: query);
+    final updatedQuery = stateById.copyWith(query: query.trim());
     updateQueryModel(updatedQuery);
   }
 

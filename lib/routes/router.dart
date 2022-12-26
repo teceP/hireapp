@@ -10,6 +10,7 @@ import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/favorites/favorites_page.dart';
 import 'package:autoroutetest/profiles/profiles_page.dart';
 import 'package:autoroutetest/profiles/single_profile_page.dart';
+import 'package:autoroutetest/search/filter_page.dart';
 import 'package:autoroutetest/search/map_page.dart';
 import 'package:autoroutetest/search/search_page.dart';
 import 'package:autoroutetest/settings/settings_page.dart';
@@ -43,6 +44,11 @@ import 'package:autoroutetest/shops/shop_page.dart';
       path: '/search',
       name: 'SearchRouter',
       page: SearchPage,
+    ),
+    AutoRoute(
+      path: '/filter:queryId',
+      name: 'FilterRouter',
+      page: FilterPage,
     ),
     AutoRoute(
       path: '/map:geopoints',
