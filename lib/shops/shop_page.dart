@@ -128,13 +128,13 @@ class _ShopPageState extends State<ShopPage>
             });
           }),
           icon: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: AppFinals.animationDuration,
             switchInCurve: Curves.easeOutCirc,
             switchOutCurve: Curves.easeInCirc,
             transitionBuilder: (child, anim) => RotationTransition(
               turns: child.key == const ValueKey('likedicon1')
-                  ? Tween<double>(begin: 0, end: 0.0000001).animate(anim)
-                  : Tween<double>(begin: 0, end: 0.0000001).animate(anim),
+                  ? Tween<double>(begin: 0, end: 0).animate(anim)
+                  : Tween<double>(begin: 0, end: 0).animate(anim),
               child: FadeTransition(opacity: anim, child: child),
             ),
             child: _liked == false
