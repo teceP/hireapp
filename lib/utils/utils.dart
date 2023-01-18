@@ -12,7 +12,7 @@ class Utils {
     }
 
     if (kDebugMode) {
-      print(place.address!);
+      //print(place.address!);
     }
 
     final street =

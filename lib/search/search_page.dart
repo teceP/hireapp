@@ -50,8 +50,8 @@ class _SearchPageState extends State<SearchPage>
     final int len = context.read<QueryCubit>().state.length;
     final bool hasDeliveredId =
         context.read<QueryCubit>().state.map((e) => e.id).contains(widget.id);
-    print('query cubit length: $len');
-    print('query cubit has delivered id (${widget.id}): $hasDeliveredId');
+    //print('query cubit length: $len');
+    //print('query cubit has delivered id (${widget.id}): $hasDeliveredId');
 
     return BlocBuilder<QueryCubit, List<QueryModel>>(
       builder: (context, queryListState) {
@@ -61,9 +61,13 @@ class _SearchPageState extends State<SearchPage>
             body: CustomScrollView(
               shrinkWrap: true,
               slivers: [
-                SliverToBoxAdapter(
-                  child: _buildActiveFilterChips(),
-                ),
+                if (context
+                    .watch<QueryCubit>()
+                    .getActiveChipsById(widget.id)
+                    .isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: _buildActiveFilterChips(),
+                  ),
                 SliverFillRemaining(
                   child: _buildSuggestions(),
                 )
@@ -146,33 +150,8 @@ class _SearchPageState extends State<SearchPage>
       );
 
   Widget _buildActiveFilterChips() {
-    final activeFilterChips = [
-      Chip(
-        onDeleted: () {
-          return;
-        },
-        label: Text(
-            '${context.read<QueryCubit>().getStateById(widget.id).distance} km'),
-      ),
-      Chip(
-        onDeleted: () {
-          return;
-        },
-        label: Text('4.5 Bewertung'),
-      ),
-      Chip(
-        onDeleted: () {
-          return;
-        },
-        label: Text('Bis 35€'),
-      ),
-      Chip(
-        onDeleted: () {
-          return;
-        },
-        label: Text('Ab 10€'),
-      ),
-    ];
+    final activeFilterChips =
+        context.read<QueryCubit>().getActiveChipsById(widget.id);
 
     return Container(
       padding: const EdgeInsets.only(

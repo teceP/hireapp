@@ -1,7 +1,9 @@
 import 'package:autoroutetest/app_finals.dart';
 import 'package:autoroutetest/search/query_model.dart';
+import 'package:autoroutetest/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QueryCubit extends Cubit<List<QueryModel>> {
@@ -113,13 +115,14 @@ class QueryCubit extends Cubit<List<QueryModel>> {
     updateQueryModel(updatedQuery);
   }
 
-  void updateDateInMillisById(int id, int dateInMillis) {
+  void updateDateInMillisById(int id, int? dateInMillis) {
     if (kDebugMode) {
       print('Update date in millis');
     }
 
     final stateById = getStateById(id);
-    final updatedQuery = stateById.copyWith(dateInMillis: dateInMillis);
+    final updatedQuery =
+        stateById.copyWithNullDateInMillis(dateInMillis: dateInMillis);
     updateQueryModel(updatedQuery);
   }
 
@@ -151,5 +154,33 @@ class QueryCubit extends Cubit<List<QueryModel>> {
     final stateById = getStateById(id);
     final updatedQuery = stateById.copyWith(minRating: minRating);
     updateQueryModel(updatedQuery);
+  }
+
+  List<Chip> getActiveChipsById(int id) {
+    List<Chip> chips = <Chip>[];
+    final stateById = getStateById(id);
+
+    if (stateById.dateInMillis != null) {
+      chips.add(
+        Chip(
+          label: Text(
+            Utils.formatDate(
+              DateTime.fromMillisecondsSinceEpoch(stateById.dateInMillis!),
+            ),
+          ),
+          onDeleted: () {
+            print('before ${stateById.dateInMillis}');
+            updateDateInMillisById(id, null);
+            print('after ${getStateById(id).dateInMillis}');
+          },
+        ),
+      );
+    }
+    if (stateById.hour != null) {}
+    if (stateById.maxPrice != null) {}
+    if (stateById.minPrice != null) {}
+    if (stateById.minRating != null) {}
+
+    return chips;
   }
 }

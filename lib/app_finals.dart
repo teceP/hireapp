@@ -28,8 +28,17 @@ class AppFinals {
   static const double commonButtonDistance = 10;
   static const double commonWidgetDistance = 10;
 
+  static const double iconSize = 30;
   static const double iconInTextSize = 16;
   static const double paddingInText = 6;
+
+  static const Duration animationDuration = Duration(milliseconds: 300);
+
+  ///Common small widgets
+  static const Widget navigageNextIcon = Icon(
+    Icons.navigate_next,
+    size: AppFinals.iconSize,
+  );
 
   ///Following statics are used for search filtering
   static const int minDistance = 1;

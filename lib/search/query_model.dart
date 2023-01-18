@@ -55,6 +55,33 @@ class QueryModel extends Equatable {
         minRating: minRating ?? this.minRating,
       );
 
+  QueryModel copyWithNullDateInMillis(
+          {int? id,
+          String? query,
+          int? dateInMillis,
+          double? lat,
+          double? lon,
+          int? hour,
+          int? minute,
+          int? distance,
+          int? maxPrice,
+          int? minPrice,
+          double? minRating}) =>
+      QueryModel(
+        id: id ?? this.id,
+        query: query ?? this.query,
+        dateInMillis: dateInMillis,
+        lastModifiedInMillis: DateTime.now().millisecondsSinceEpoch,
+        hour: hour ?? this.hour,
+        minute: minute ?? this.minute,
+        lat: lat ?? this.lat,
+        lon: lon ?? this.lon,
+        distance: distance ?? this.distance,
+        minPrice: minPrice ?? this.minPrice,
+        maxPrice: maxPrice ?? this.maxPrice,
+        minRating: minRating ?? this.minRating,
+      );
+
   bool isDefaultValued() =>
       dateInMillis == null &&
       hour == null &&
