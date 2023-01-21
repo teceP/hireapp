@@ -19,6 +19,7 @@ class LatestSearchObject {
 
   Widget buildWidget() => Card(
         elevation: AppFinals.elevation,
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             AppFinals.borderRadius,

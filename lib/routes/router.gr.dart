@@ -16,21 +16,21 @@ import 'package:auto_route/empty_router_widgets.dart' as _i1;
 import 'package:flutter/cupertino.dart' as _i19;
 import 'package:flutter/material.dart' as _i18;
 
-import '../booking/bookings_page.dart' as _i13;
-import '../booking/single_booking_page.dart' as _i14;
+import '../booking/bookings_page.dart' as _i15;
+import '../booking/single_booking_page.dart' as _i16;
 import '../chats/chats_page.dart' as _i8;
 import '../chats/single_chat_page.dart' as _i9;
 import '../favorites/favorites_page.dart' as _i11;
 import '../home/bottombar/bottom_nav_page.dart' as _i7;
 import '../home/home_page.dart' as _i10;
-import '../profiles/profiles_page.dart' as _i15;
-import '../profiles/single_profile_page.dart' as _i16;
+import '../profile/profile_page.dart' as _i12;
+import '../profile/signe_in_page.dart' as _i13;
 import '../search/filter_page.dart' as _i4;
 import '../search/map_page.dart' as _i5;
 import '../search/search_page.dart' as _i3;
 import '../settings/settings_page.dart' as _i6;
 import '../shops/shop_page.dart' as _i2;
-import '../unknown/unknown_page.dart' as _i12;
+import '../unknown/unknown_page.dart' as _i14;
 
 class AppRouter extends _i17.RootStackRouter {
   AppRouter([_i18.GlobalKey<_i18.NavigatorState>? navigatorKey])
@@ -143,22 +143,30 @@ class AppRouter extends _i17.RootStackRouter {
         child: const _i1.EmptyRouterPage(),
       );
     },
-    ProfilesRouter.name: (routeData) {
+    ProfileRouter.name: (routeData) {
+      final args = routeData.argsAs<ProfileRouterArgs>(
+          orElse: () => const ProfileRouterArgs());
       return _i17.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i1.EmptyRouterPage(),
+        child: _i12.ProfilePage(key: args.key),
+      );
+    },
+    SignInRouter.name: (routeData) {
+      return _i17.MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: _i13.SignInPage(),
       );
     },
     UnknownRoute.name: (routeData) {
       return _i17.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i12.UnknownPage(),
+        child: const _i14.UnknownPage(),
       );
     },
     BookingsRoute.name: (routeData) {
       return _i17.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i13.BookingsPage(),
+        child: const _i15.BookingsPage(),
       );
     },
     SingleBookingRoute.name: (routeData) {
@@ -168,27 +176,8 @@ class AppRouter extends _i17.RootStackRouter {
               SingleBookingRouteArgs(bookingId: pathParams.get('bookingId')));
       return _i17.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i14.SingleBookingPage(
+        child: _i16.SingleBookingPage(
           bookingId: args.bookingId,
-          key: args.key,
-        ),
-      );
-    },
-    ProfilesRoute.name: (routeData) {
-      return _i17.MaterialPageX<dynamic>(
-        routeData: routeData,
-        child: const _i15.ProfilesPage(),
-      );
-    },
-    SingleProfileRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<SingleProfileRouteArgs>(
-          orElse: () =>
-              SingleProfileRouteArgs(profileId: pathParams.get('profileId')));
-      return _i17.MaterialPageX<dynamic>(
-        routeData: routeData,
-        child: _i16.SingleProfilePage(
-          profileId: args.profileId,
           key: args.key,
         ),
       );
@@ -265,21 +254,14 @@ class AppRouter extends _i17.RootStackRouter {
               ],
             ),
             _i17.RouteConfig(
-              ProfilesRouter.name,
-              path: 'profiles',
+              ProfileRouter.name,
+              path: 'profile',
               parent: BottomNavRoute.name,
-              children: [
-                _i17.RouteConfig(
-                  ProfilesRoute.name,
-                  path: '',
-                  parent: ProfilesRouter.name,
-                ),
-                _i17.RouteConfig(
-                  SingleProfileRoute.name,
-                  path: ':profileId',
-                  parent: ProfilesRouter.name,
-                ),
-              ],
+            ),
+            _i17.RouteConfig(
+              SignInRouter.name,
+              path: 'signin',
+              parent: BottomNavRoute.name,
             ),
             _i17.RouteConfig(
               UnknownRoute.name,
@@ -553,20 +535,43 @@ class BookingsRouter extends _i17.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i1.EmptyRouterPage]
-class ProfilesRouter extends _i17.PageRouteInfo<void> {
-  const ProfilesRouter({List<_i17.PageRouteInfo>? children})
+/// [_i12.ProfilePage]
+class ProfileRouter extends _i17.PageRouteInfo<ProfileRouterArgs> {
+  ProfileRouter({_i19.Key? key})
       : super(
-          ProfilesRouter.name,
-          path: 'profiles',
-          initialChildren: children,
+          ProfileRouter.name,
+          path: 'profile',
+          args: ProfileRouterArgs(key: key),
         );
 
-  static const String name = 'ProfilesRouter';
+  static const String name = 'ProfileRouter';
+}
+
+class ProfileRouterArgs {
+  const ProfileRouterArgs({this.key});
+
+  final _i19.Key? key;
+
+  @override
+  String toString() {
+    return 'ProfileRouterArgs{key: $key}';
+  }
 }
 
 /// generated route for
-/// [_i12.UnknownPage]
+/// [_i13.SignInPage]
+class SignInRouter extends _i17.PageRouteInfo<void> {
+  const SignInRouter()
+      : super(
+          SignInRouter.name,
+          path: 'signin',
+        );
+
+  static const String name = 'SignInRouter';
+}
+
+/// generated route for
+/// [_i14.UnknownPage]
 class UnknownRoute extends _i17.PageRouteInfo<void> {
   const UnknownRoute()
       : super(
@@ -578,7 +583,7 @@ class UnknownRoute extends _i17.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i13.BookingsPage]
+/// [_i15.BookingsPage]
 class BookingsRoute extends _i17.PageRouteInfo<void> {
   const BookingsRoute()
       : super(
@@ -590,7 +595,7 @@ class BookingsRoute extends _i17.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i14.SingleBookingPage]
+/// [_i16.SingleBookingPage]
 class SingleBookingRoute extends _i17.PageRouteInfo<SingleBookingRouteArgs> {
   SingleBookingRoute({
     required dynamic bookingId,
@@ -621,52 +626,5 @@ class SingleBookingRouteArgs {
   @override
   String toString() {
     return 'SingleBookingRouteArgs{bookingId: $bookingId, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i15.ProfilesPage]
-class ProfilesRoute extends _i17.PageRouteInfo<void> {
-  const ProfilesRoute()
-      : super(
-          ProfilesRoute.name,
-          path: '',
-        );
-
-  static const String name = 'ProfilesRoute';
-}
-
-/// generated route for
-/// [_i16.SingleProfilePage]
-class SingleProfileRoute extends _i17.PageRouteInfo<SingleProfileRouteArgs> {
-  SingleProfileRoute({
-    required dynamic profileId,
-    _i19.Key? key,
-  }) : super(
-          SingleProfileRoute.name,
-          path: ':profileId',
-          args: SingleProfileRouteArgs(
-            profileId: profileId,
-            key: key,
-          ),
-          rawPathParams: {'profileId': profileId},
-        );
-
-  static const String name = 'SingleProfileRoute';
-}
-
-class SingleProfileRouteArgs {
-  const SingleProfileRouteArgs({
-    required this.profileId,
-    this.key,
-  });
-
-  final dynamic profileId;
-
-  final _i19.Key? key;
-
-  @override
-  String toString() {
-    return 'SingleProfileRouteArgs{profileId: $profileId, key: $key}';
   }
 }

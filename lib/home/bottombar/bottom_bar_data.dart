@@ -45,14 +45,15 @@ class BottomBarData {
         ),
         router: const BookingsRouter()),
     BottomNavBarTuple(
-        bottomBarItem: SalomonBottomBarItem(
-          title: const Text('Profil'),
-          selectedColor: Colors.green,
-          icon: const Icon(
-            FontAwesomeIcons.userAstronaut,
-            size: 25,
-          ),
+      bottomBarItem: SalomonBottomBarItem(
+        title: const Text('Profil'),
+        selectedColor: Colors.green,
+        icon: const Icon(
+          FontAwesomeIcons.userAstronaut,
+          size: 25,
         ),
-        router: const ProfilesRouter()),
+      ),
+      router: ProfileRouter(),
+    ), //const SignInRouter()),
   ];
 }

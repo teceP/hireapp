@@ -46,6 +46,7 @@ dependencies:
   sizer: ^2.0.15
   sliver_header_delegate: ^0.0.5
   like_button: ^2.0.5
+  #google_sign_in: ^5.4.3
 
   flutter_osm_plugin: ^0.50.0-alpha.4
   osm_nominatim: ^2.0.1

@@ -59,6 +59,13 @@ class HireApp extends StatelessWidget {
         theme: ThemeData(
           appBarTheme: AppBarTheme.of(context).copyWith(
             backgroundColor: AppFinals.appBarColor,
+            titleTextStyle: GoogleFonts.roboto(
+              color: Colors.black,
+              fontSize: 18,
+            ),
+            iconTheme: IconTheme.of(context).copyWith(color: Colors.black),
+            actionsIconTheme:
+                IconTheme.of(context).copyWith(color: Colors.black),
           ),
           textTheme: GoogleFonts.robotoTextTheme(
             Theme.of(context).textTheme.apply(),

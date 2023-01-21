@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppFinals {
-  static Color appBarColor = Colors.blue[800]!;
+  static Color appBarColor = Colors.white; //Colors.blue[800]!;
   static Color buttonColor = Colors.blue[800]!;
-  static const Color frameColor = Colors.orange;
+  static const Color frameColor = Colors.transparent;
 
   static const double borderRadius = 10;
   static const double borderRadiusTextField = 30;
@@ -18,7 +18,7 @@ class AppFinals {
   static const double verticalPaddingTextField = 10;
   static const double bottomSafeAreaPadding = 40;
 
-  static const double elevation = 5;
+  static const double elevation = 2;
   static const double textSizeButton = 16;
 
   static const String appName = 'Hire App';

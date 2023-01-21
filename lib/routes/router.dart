@@ -8,8 +8,8 @@ import 'package:autoroutetest/home/bottombar/bottom_nav_page.dart';
 import 'package:autoroutetest/home/tabbar/home_page_tab.dart';
 import 'package:autoroutetest/home/home_page.dart';
 import 'package:autoroutetest/favorites/favorites_page.dart';
-import 'package:autoroutetest/profiles/profiles_page.dart';
-import 'package:autoroutetest/profiles/single_profile_page.dart';
+import 'package:autoroutetest/profile/profile_page.dart';
+import 'package:autoroutetest/profile/signe_in_page.dart';
 import 'package:autoroutetest/search/filter_page.dart';
 import 'package:autoroutetest/search/map_page.dart';
 import 'package:autoroutetest/search/search_page.dart';
@@ -90,19 +90,14 @@ import 'package:autoroutetest/shops/shop_page.dart';
           ],
         ),
         AutoRoute(
-          path: 'profiles',
-          name: 'ProfilesRouter',
-          page: EmptyRouterPage,
-          children: [
-            AutoRoute(
-              path: '',
-              page: ProfilesPage,
-            ),
-            AutoRoute(
-              path: ':profileId',
-              page: SingleProfilePage,
-            ),
-          ],
+          path: 'profile',
+          name: 'ProfileRouter',
+          page: ProfilePage,
+        ),
+        AutoRoute(
+          path: 'signin',
+          name: 'SignInRouter',
+          page: SignInPage,
         ),
         AutoRoute(
           path: '*',
