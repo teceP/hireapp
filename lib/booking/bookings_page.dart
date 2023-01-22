@@ -10,15 +10,18 @@ class BookingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView.builder(
-      itemCount: 20,
-      itemBuilder: (context, bookingId) => TextButton(
-        onPressed: () {
-          // context.router.push(SingleBookingRoute(bookingId: bookingId));
-        },
-        child: Text('Booking ID - $bookingId'),
+      body: ListView.builder(
+        itemCount: 20,
+        itemBuilder: (context, bookingId) => ListTile(
+          title: TextButton(
+            onPressed: () {
+              // context.router.push(SingleBookingRoute(bookingId: bookingId));
+            },
+            child: Text('Booking ID - $bookingId'),
+          ),
+        ),
       ),
-    ));
+    );
   }
 }
 

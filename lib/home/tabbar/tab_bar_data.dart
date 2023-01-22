@@ -18,10 +18,10 @@ class TabBarViewItem {
 
 class TabBarData {
   static final List<TabBarViewItem> animals = [
-     const TabBarViewItem(
+    const TabBarViewItem(
       picUri: 'assets/dummy/tabbar/animals/elefant.jpg',
       title: 'Elefanten GmbH',
-      address: 'Frankfuert Allee 21, 10435, Berlin (1km)',
+      address: 'Frankfuert Allee',
       rating: 5,
       ratings: 77,
       advertisement: 'Neuer Shop',
@@ -29,7 +29,7 @@ class TabBarData {
     const TabBarViewItem(
       picUri: 'assets/dummy/tabbar/animals/schwein.jpg',
       title: 'Schweini GmbH',
-      address: 'Skalitzer Straße 7, 12405, Berlin (3km)',
+      address: 'Skalitzer Straße',
       rating: 4.1,
       ratings: 17,
       advertisement: 'Gratis',
@@ -37,7 +37,7 @@ class TabBarData {
     const TabBarViewItem(
       picUri: 'assets/dummy/tabbar/animals/welpe.jpg',
       title: 'Welpen GmbH',
-      address: 'Lohmühlenstraße 40, 12435, Berlin (7km)',
+      address: 'Lohmühlenstraße',
       rating: 4.7,
       ratings: 1127,
       advertisement: 'Heute bis 17 Uhr',

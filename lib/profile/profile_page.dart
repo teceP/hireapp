@@ -8,16 +8,17 @@ import 'package:flutter/src/widgets/framework.dart';
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
-  bool _signedIn = false;
+  bool _signedIn = true;
 
   @override
   Widget build(BuildContext context) {
     if (!_signedIn) {
       return SignInPage();
     }
+    print('profile page');
     return Scaffold(
         body: Center(
-      child: Text('Profile'),
+      child: Text('Profile Page'),
     ));
   }
 }

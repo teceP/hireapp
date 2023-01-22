@@ -29,8 +29,12 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppFinals.horizontalPaddingLess,
+        padding: EdgeInsets.only(
+          //horizontal: AppFinals.horizontalPaddingLess,
+          top: MediaQuery.of(context).padding.top,
+          bottom: MediaQuery.of(context).padding.bottom,
+          left: AppFinals.horizontalPaddingLess,
+          right: AppFinals.horizontalPaddingLess,
         ),
         itemCount: TabBarData.animals.length,
         itemBuilder: (context, index) => Padding(

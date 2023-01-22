@@ -9,9 +9,45 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 class BottomNavPage extends StatelessWidget {
   const BottomNavPage({super.key});
 
-  AppBar _buildTitleWidget(TabsRouter tabsRouter, BuildContext context) {
-    final String path = tabsRouter.currentPath;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppFinals.backgroundColor,
+      /*padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+        bottom: MediaQuery.of(context).padding.bottom,
+      ),*/
+      child: AutoTabsScaffold(
+        backgroundColor: Colors.grey[50],
+        drawer: _buildDrawer(context),
+        //appBarBuilder: (context, tabsRouter) => _buildAppBar(tabsRouter, context),
+        routes: [
+          ...BottomBarData.items.map((e) => e.router),
+        ],
+        bottomNavigationBuilder: (context, tabsRouter) {
+          return Container(
+            decoration: BoxDecoration(
+              color: AppFinals.backgroundColor,
+            ),
+            child: SalomonBottomBar(
+              margin: const EdgeInsets.symmetric(
+                horizontal: AppFinals.horizontalPadding,
+                vertical: 10,
+              ),
+              currentIndex: tabsRouter.activeIndex,
+              onTap: tabsRouter.setActiveIndex,
+              items: [
+                ...BottomBarData.items.map((e) => e.bottomBarItem),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
+  AppBar? _buildAppBar(TabsRouter tabsRouter, BuildContext context) {
+    final String path = tabsRouter.currentPath;
     switch (path) {
       default:
         return AppBar(
@@ -37,11 +73,7 @@ class BottomNavPage extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AutoTabsScaffold(
-      backgroundColor: Colors.grey[50],
-      drawer: Drawer(
+  Drawer _buildDrawer(BuildContext context) => Drawer(
         child: SizedBox(
           height: MediaQuery.of(context).size.height -
               AppBar().preferredSize.height,
@@ -60,6 +92,7 @@ class BottomNavPage extends StatelessWidget {
                 ),
               ),
               ListTile(
+                style: ListTileStyle.drawer,
                 title: const Text('Deinen Shop anbieten'),
                 onTap: () {},
               ),
@@ -119,29 +152,5 @@ class BottomNavPage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      appBarBuilder: (context, tabsRouter) =>
-          _buildTitleWidget(tabsRouter, context),
-      routes: [
-        ...BottomBarData.items.map((e) => e.router),
-      ],
-      bottomNavigationBuilder: (context, tabsRouter) {
-        return Card(
-          margin: EdgeInsets.zero,
-          elevation: 20,
-          child: SalomonBottomBar(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 10,
-            ),
-            currentIndex: tabsRouter.activeIndex,
-            onTap: tabsRouter.setActiveIndex,
-            items: [
-              ...BottomBarData.items.map((e) => e.bottomBarItem),
-            ],
-          ),
-        );
-      },
-    );
-  }
+      );
 }

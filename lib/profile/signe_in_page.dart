@@ -5,11 +5,14 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        children: [],
+    print('sign in page');
+
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          'Sign In Page',
+        ),
       ),
-    ));
+    );
   }
 }

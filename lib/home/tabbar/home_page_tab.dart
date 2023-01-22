@@ -47,7 +47,7 @@ class HomePageTab extends StatelessWidget {
           return SizedBox(
             height: height,
             child: Card(
-              color: Colors.blue,
+              color: AppFinals.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   AppFinals.borderRadius,
@@ -99,114 +99,75 @@ class PreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          AppFinals.borderRadius,
-        ),
+    return GestureDetector(
+      onTap: () => context.router.push(
+        ShopRouter(shopId: shopId),
       ),
-      elevation: AppFinals.elevation,
-      child: Stack(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(AppFinals.borderRadius),
-                  topRight: Radius.circular(AppFinals.borderRadius),
+      child: Container(
+        padding: const EdgeInsets.only(
+          left: AppFinals.horizontalPaddingLess,
+          right: AppFinals.horizontalPadding,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppFinals.borderRadius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(3.0, 6.0),
+                    blurRadius: 10,
+                    color: Colors.black26,
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(AppFinals.borderRadius),
                 ),
                 child: Image.asset(
                   TabBarData.animals[tabBarDataIndex].picUri,
-                  height: height * 0.5,
-                  width: double.infinity,
+                  height: height * 0.75,
                   fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: AppFinals.horizontalPadding,
-                  right: AppFinals.horizontalPadding,
-                  top: AppFinals.verticalPadding,
-                  //bottom: AppFinals.verticalPaddingAdditional,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      item.address,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Color.fromARGB(255, 255, 203, 59),
-                        ),
-                        Text(
-                          '${item.rating} ',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          '${item.ratings} Bewertungen',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Chip(
-                      label: Text(
-                        item.advertisement,
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  ],
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                item.title,
+                style: TextStyle(
+                  color: AppFinals.primaryColorDark,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  context.router.navigate(
-                    ShopRouter(
-                      shopId: 'shopId-$shopId',
-                    ),
-                  );
-                },
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(
+              subtitle: Text(
+                item.address,
+                style: TextStyle(color: AppFinals.thirdColorGreened),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: AppFinals.primaryColor,
+                  borderRadius: BorderRadius.circular(
                     AppFinals.borderRadius,
+                  ),
+                ),
+                child: Text(
+                  item.advertisement,
+                  style: const TextStyle(
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

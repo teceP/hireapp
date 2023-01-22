@@ -27,50 +27,229 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final _tabBarViewHeight = 315.0;
 
+  final _scrollController = ScrollController();
+  bool _isScrolledToTop = true;
+  static const double emptySpace = 10.0;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.offset <=
+              _scrollController.position.minScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        if (!_isScrolledToTop) {
+          setState(() {
+            _isScrolledToTop = true;
+          });
+        }
+      } else {
+        if (_scrollController.offset > emptySpace && _isScrolledToTop) {
+          setState(() {
+            _isScrolledToTop = false;
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _01_buildSearch(context),
-          const SizedBox(
-            height: 20,
+    return AnimatedSwitcher(
+      duration: AppFinals.animationDuration,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: _isScrolledToTop ? 0 : 2,
+          backgroundColor: Colors.grey[50],
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.blur_on,
+                color: AppFinals.primaryColor,
+              ),
+            ),
           ),
-          _x_buildText(context, 'Finde die besten Angebote'),
-          const SizedBox(
-            height: 10,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                padding: EdgeInsets.zero,
+                icon: LayoutBuilder(
+                  builder: (context, constraints) => Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: constraints.biggest.width,
+                        height: constraints.biggest.height,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppFinals.primaryColor,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: constraints.biggest.width * 0.97,
+                        height: constraints.biggest.height * 0.97,
+                        padding: const EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          // color: AppFinals.primaryColorDark,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: const CircleAvatar(
+                          backgroundImage: AssetImage(
+                            'assets/dummy/person/Mario.png',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(
+            //top: MediaQuery.of(context).padding.top,
+            bottom: MediaQuery.of(context).padding.bottom,
           ),
-          _2_buildTab(context),
-          const SizedBox(
-            height: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /*_buildHeader(context),
+              const SizedBox(
+                height: 20,
+              ),*/
+              _buildWelcome(),
+              const SizedBox(
+                height: 20,
+              ),
+              _01_buildSearch(context),
+              const SizedBox(
+                height: 20,
+              ),
+              /*_x_buildText(context, 'Finde die besten Angebote'),
+              const SizedBox(
+                height: 10,
+              ),*/
+              _2_buildTab(context),
+              const SizedBox(
+                height: 10,
+              ),
+              _x_buildText(context, 'Deine Suche fortsetzen'),
+              const SizedBox(
+                height: 10,
+              ),
+              for (final w in _buildLatestSearches2(context)) w,
+              //_3_buildLatestSearches(context),
+            ],
           ),
-          _x_buildText(context, 'Deine Suche fortsetzen'),
-          const SizedBox(
-            height: 10,
-          ),
-          _3_buildLatestSearches(context),
-        ],
+        ),
       ),
     );
   }
 
+  Widget _buildHeader(BuildContext context) {
+    return ListTile(
+      leading: IconButton(
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+        padding: EdgeInsets.zero,
+        icon: Icon(
+          Icons.blur_on,
+          color: AppFinals.primaryColor,
+        ),
+      ),
+      trailing: IconButton(
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+        padding: EdgeInsets.zero,
+        icon: LayoutBuilder(
+          builder: (context, constraints) => Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: constraints.biggest.width,
+                height: constraints.biggest.height,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppFinals.primaryColor,
+                  ),
+                ),
+              ),
+              Container(
+                width: constraints.biggest.width * 0.97,
+                height: constraints.biggest.height * 0.97,
+                padding: const EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  // color: AppFinals.primaryColorDark,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                ),
+                child: const CircleAvatar(
+                  backgroundImage: AssetImage(
+                    'assets/dummy/person/Mario.png',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  final double _homePagePadding = 32;
+
+  Widget _buildWelcome() => ListTile(
+        contentPadding: EdgeInsets.only(
+          left: _homePagePadding,
+          right: MediaQuery.of(context).size.width * 0.15,
+        ),
+        title: Text(
+          'Welcome to your greenhouse',
+          style: Theme.of(context).textTheme.headline4!.copyWith(
+                color: AppFinals.primaryColorDark,
+              ),
+        ),
+      );
+
   // ignore: non_constant_identifier_names
   Widget _x_buildText(BuildContext context, String text) => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppFinals.horizontalPadding),
+        padding: EdgeInsets.symmetric(
+          horizontal: _homePagePadding, //AppFinals.horizontalPadding,
+        ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
+          style: TextStyle(
+            fontWeight: Theme.of(context).textTheme.titleLarge!.fontWeight,
+            fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
+            color: AppFinals.primaryColorDark,
           ),
         ),
       );
@@ -78,11 +257,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _01_buildSearch(BuildContext context) =>
       BlocBuilder<HomeQueryCubit, QueryModel>(
         builder: (context, homeQueryState) => Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppFinals.horizontalPadding),
+          padding: EdgeInsets.symmetric(horizontal: _homePagePadding),
           child: Card(
             margin: EdgeInsets.zero,
-            elevation: AppFinals.elevation,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               side: const BorderSide(
                 color: AppFinals.frameColor,
@@ -93,7 +271,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 10,
               ),
             ),
-            child: Column(
+            child: __buildWhatDoYouSearch(),
+            /*Column(
               children: [
                 /**
                * Service...
@@ -163,13 +342,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     trailing: null,
                   ),
                 ),
-                const Divider(
-                  color: Colors.black26,
-                  height: 2,
-                ),
+
                 /**
                * Address...
                */
+                /*const Divider(
+                  color: Colors.black26,
+                  height: 2,
+                ),*/
+                /*
                 InkWell(
                   onTap: (() {}),
                   child: ListTile(
@@ -265,7 +446,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),*/
                   ),
-                ),
+                ),*/
                 const Divider(
                   color: Colors.black26,
                   height: 2,
@@ -337,7 +518,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ],
-            ),
+            ),*/
           ),
         ),
       );
@@ -366,6 +547,82 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           .updateDateInMillis(chosenDate.millisecondsSinceEpoch);
     }
   }*/
+
+  Widget __buildWhatDoYouSearch() => BlocBuilder<HomeQueryCubit, QueryModel>(
+        builder: (context, homeQueryState) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: AppFinals.thirdColor,
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.only(left: 16),
+            minVerticalPadding: 0,
+            title: GestureDetector(
+              onTap: (() async {
+                final searchResult = await showSearch(
+                  context: context,
+                  delegate: SearchPopup(
+                    searchType: SearchType.service,
+                    hintText: SearchType.service.hintText(),
+                  ),
+                );
+
+                if (searchResult != null) {
+                  if (kDebugMode) {
+                    print('Service SearchResult: $searchResult');
+                  }
+
+                  //... do something with result.
+                  context.read<HomeQueryCubit>().updateQuery(searchResult);
+                }
+              }),
+              child: Text(
+                (context.watch<HomeQueryCubit>().state.query.isNotEmpty)
+                    ? context.watch<HomeQueryCubit>().state.query
+                    : 'Wonach suchst du?',
+                style: TextStyle(
+                  color: AppFinals.primaryColorDark,
+                ),
+              ),
+            ),
+            trailing: LayoutBuilder(
+              builder: (context, constraints) => GestureDetector(
+                onTap: (() {
+                  final homeQueryModel = context.read<HomeQueryCubit>().state;
+                  final id =
+                      context.read<QueryCubit>().addQueryModel(homeQueryState);
+
+                  if (id == -2) {
+                    print('ERROR ALERT: ID of Query is -2!');
+                  } else {
+                    context.read<HomeQueryCubit>().backToDefault();
+                  }
+
+                  context.router.push(
+                    SearchRouter(
+                      id: id,
+                    ),
+                  );
+                }),
+                child: Container(
+                  height: constraints.biggest.height,
+                  width: constraints.biggest.height,
+                  decoration: BoxDecoration(
+                    color: AppFinals.primaryColor,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 
   // ignore: non_constant_identifier_names
   Widget _2_buildTab(BuildContext context) => DefaultTabController(
@@ -404,6 +661,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       );
+
+  List<Widget> _buildLatestSearches2(BuildContext context) {
+    List<Widget> widgets = [];
+
+    for (final current in HomeData.latestSearches) {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppFinals.verticalPadding),
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: _homePagePadding,
+            ),
+            decoration: BoxDecoration(
+              color: AppFinals.thirdColor,
+              borderRadius: BorderRadius.circular(
+                AppFinals.borderRadius,
+              ),
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 3,
+              ),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  AppFinals.borderRadius - 5,
+                ),
+                child: Image.asset(
+                  current.picUri,
+                  fit: BoxFit.scaleDown,
+                ),
+              ),
+              title: Text(
+                current.destination,
+                style: TextStyle(
+                  color: AppFinals.primaryColorDark,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                '${current.date}, ${current.capacity}',
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: AppFinals.thirdColorGreened,
+                ),
+              ),
+              trailing: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    AppFinals.borderRadius,
+                  ),
+                  color: AppFinals.primaryColor,
+                  shape: BoxShape.rectangle,
+                ),
+                child: AppFinals.navigageNextIconWhite,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return widgets;
+  }
 
   // ignore: non_constant_identifier_names
   Widget _3_buildLatestSearches(BuildContext context) => SizedBox(
@@ -448,13 +770,22 @@ class HomePageTabBarSliverPersistentHeaderDelegate
     return Align(
       alignment: Alignment.topLeft,
       child: ColoredBox(
-        color: Colors.grey[50]!,
+        color: Colors.transparent,
         child: TabBar(
           padding: const EdgeInsets.symmetric(
-              horizontal: AppFinals.horizontalPadding),
-          indicatorColor: Colors.black,
-          unselectedLabelColor: Colors.grey,
-          labelColor: Colors.black,
+            horizontal: AppFinals.horizontalPadding,
+          ),
+          labelStyle: TextStyle(
+            fontWeight: Theme.of(context).textTheme.titleLarge!.fontWeight,
+            fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
+          ),
+          unselectedLabelStyle: TextStyle(
+            fontWeight: Theme.of(context).textTheme.subtitle1!.fontWeight,
+            fontSize: Theme.of(context).textTheme.subtitle1!.fontSize,
+          ),
+          indicatorColor: Colors.transparent,
+          unselectedLabelColor: AppFinals.thirdColorGreyed,
+          labelColor: AppFinals.primaryColorDark,
           indicatorSize: TabBarIndicatorSize.tab,
           physics: const BouncingScrollPhysics(),
           automaticIndicatorColorAdjustment: false,
